@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AccessibilityWidget from "@/components/AccessibilityWidget";
 import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { WishlistProvider } from "@/context/WishlistContext";
@@ -28,6 +29,7 @@ export default function RootLayout({
               <Header />
               <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
               <Footer />
+              <AccessibilityWidget />
             </CartProvider>
           </WishlistProvider>
         </AuthProvider>

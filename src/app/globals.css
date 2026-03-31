@@ -51,6 +51,69 @@ body {
   outline: none;
 }
 
+/* Accessibility: font size */
+.a11y-font-1 {
+  font-size: 120% !important;
+}
+.a11y-font-2 {
+  font-size: 140% !important;
+}
+
+/* Accessibility: high contrast */
+.a11y-high-contrast {
+  filter: contrast(1.5) !important;
+}
+.a11y-high-contrast * {
+  border-color: currentColor !important;
+}
+
+/* Accessibility: grayscale */
+.a11y-grayscale {
+  filter: grayscale(1) !important;
+}
+.a11y-high-contrast.a11y-grayscale {
+  filter: contrast(1.5) grayscale(1) !important;
+}
+
+/* Accessibility: highlight links */
+.a11y-highlight-links a {
+  outline: 2px solid #f38eb3 !important;
+  outline-offset: 2px !important;
+  text-decoration: underline !important;
+}
+
+/* Accessibility: readable font */
+.a11y-readable-font,
+.a11y-readable-font * {
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+/* Accessibility: big cursor */
+.a11y-big-cursor,
+.a11y-big-cursor * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpath d='M8 4l28 20H20l-2 1-8 16V4z' fill='black' stroke='white' stroke-width='2'/%3E%3C/svg%3E") 4 4, auto !important;
+}
+
+/* Accessibility: line height */
+.a11y-line-height,
+.a11y-line-height * {
+  line-height: 2 !important;
+}
+
+/* Accessibility: text spacing */
+.a11y-text-spacing,
+.a11y-text-spacing * {
+  letter-spacing: 0.12em !important;
+  word-spacing: 0.16em !important;
+}
+
+/* Accessibility: stop animations */
+.a11y-stop-animations,
+.a11y-stop-animations * {
+  animation: none !important;
+  transition: none !important;
+}
+
 @keyframes fade-in {
   from {
     opacity: 0;
