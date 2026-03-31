@@ -47,8 +47,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <button
           onClick={() => setSidebarOpen(true)}
           className="p-2 hover:bg-primary/5 rounded-xl transition-colors"
+          aria-label="פתח תפריט ניהול"
         >
-          <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
@@ -69,6 +70,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         {/* Sidebar */}
         <aside
+          aria-label="תפריט ניהול"
           className={`fixed top-0 right-0 h-full w-72 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:shadow-none lg:border-l lg:border-primary/10 lg:z-auto ${
             sidebarOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"
           }`}
@@ -80,21 +82,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <button
                 onClick={() => setSidebarOpen(false)}
                 className="lg:hidden p-1 hover:bg-primary/5 rounded-lg transition-colors"
+                aria-label="סגור תפריט"
               >
-                <svg className="w-5 h-5 text-primary/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 text-primary/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
 
             {/* Nav items */}
-            <nav className="space-y-1">
+            <nav aria-label="ניווט ניהול" className="space-y-1">
               {navItems.map((item) => {
                 const isActive = pathname === item.href;
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
+                    aria-current={isActive ? "page" : undefined}
                     className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                       isActive
                         ? "bg-primary text-white shadow-md"

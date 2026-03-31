@@ -47,6 +47,7 @@ export default function CartPage() {
                 <button
                   onClick={() => removeItem(item.product.id)}
                   className="text-primary/30 hover:text-red-500 transition-colors"
+                  aria-label={`הסר ${item.product.name} מהסל`}
                 >
                   ✕
                 </button>
@@ -77,13 +78,15 @@ export default function CartPage() {
                 <button
                   onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
                   className="w-8 h-8 rounded-full bg-primary/5 text-primary hover:bg-primary/10 flex items-center justify-center"
+                  aria-label={`הפחת כמות ${item.product.name}`}
                 >
                   -
                 </button>
-                <span className="font-semibold text-primary">{item.quantity}</span>
+                <span className="font-semibold text-primary" aria-label={`כמות: ${item.quantity}`}>{item.quantity}</span>
                 <button
                   onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
                   className="w-8 h-8 rounded-full bg-primary/5 text-primary hover:bg-primary/10 flex items-center justify-center"
+                  aria-label={`הוסף כמות ${item.product.name}`}
                 >
                   +
                 </button>

@@ -39,6 +39,18 @@ body {
   font-family: "Einstein", Arial, Helvetica, sans-serif;
 }
 
+/* Global focus styles for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid #f38eb3;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Remove focus ring for mouse clicks */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
 @keyframes fade-in {
   from {
     opacity: 0;

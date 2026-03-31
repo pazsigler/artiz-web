@@ -39,7 +39,7 @@ export default function HeroSlider({ slides }: Props) {
   const slide = slides[current];
 
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative overflow-hidden" aria-label="באנרים" aria-roledescription="קרוסלה">
       {/* Slide */}
       <div
         key={slide.id}

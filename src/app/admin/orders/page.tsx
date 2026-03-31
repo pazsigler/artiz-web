@@ -68,6 +68,7 @@ export default function AdminOrders() {
       <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
         <button
           onClick={() => setFilter("all")}
+          aria-pressed={filter === "all"}
           className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors ${filter === "all" ? "bg-primary text-white" : "bg-primary/5 text-primary hover:bg-primary/10"}`}
         >
           הכל
@@ -76,6 +77,7 @@ export default function AdminOrders() {
           <button
             key={key}
             onClick={() => setFilter(key)}
+            aria-pressed={filter === key}
             className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors whitespace-nowrap ${filter === key ? "bg-primary text-white" : "bg-primary/5 text-primary hover:bg-primary/10"}`}
           >
             {label}
@@ -86,9 +88,12 @@ export default function AdminOrders() {
       <div className="space-y-3">
         {filteredOrders.map((order) => (
           <div key={order.id} className="bg-white border border-primary/10 rounded-xl overflow-hidden">
-            <div
-              className="flex items-center gap-4 p-4 cursor-pointer hover:bg-sky/5 transition-colors"
+            <button
+              type="button"
+              className="flex items-center gap-4 p-4 cursor-pointer hover:bg-sky/5 transition-colors w-full text-right"
               onClick={() => setExpandedId(expandedId === order.id ? null : order.id)}
+              aria-expanded={expandedId === order.id}
+              aria-controls={`order-details-${order.id}`}
             >
               <div className="flex-1 min-w-0">
                 <div className="font-bold text-primary">{order.full_name}</div>
@@ -105,10 +110,10 @@ export default function AdminOrders() {
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
-            </div>
+            </button>
 
             {expandedId === order.id && (
-              <div className="border-t border-primary/10 p-4 space-y-4">
+              <div id={`order-details-${order.id}`} role="region" aria-label={`פרטי הזמנה ${order.full_name}`} className="border-t border-primary/10 p-4 space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                   <div>
                     <span className="font-semibold text-primary">טלפון: </span>

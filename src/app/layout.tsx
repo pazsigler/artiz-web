@@ -22,8 +22,11 @@ export default function RootLayout({
         <AuthProvider>
           <WishlistProvider>
             <CartProvider>
+              <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:right-2 focus:z-[200] focus:bg-primary focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold">
+                דלג לתוכן הראשי
+              </a>
               <Header />
-              <main className="flex-1">{children}</main>
+              <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
               <Footer />
             </CartProvider>
           </WishlistProvider>

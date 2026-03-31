@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import { Product } from "@/lib/types";
 import { useCart } from "@/context/CartContext";
@@ -95,6 +95,18 @@ export default function ProductDetails({ product }: { product: Product }) {
     router.push("/checkout");
   };
 
+  // Lightbox keyboard navigation
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setLightboxOpen(false);
+      if (e.key === "ArrowLeft") setLightboxIndex((prev) => (prev + 1) % allImages.length);
+      if (e.key === "ArrowRight") setLightboxIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [lightboxOpen, allImages.length]);
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
       <button
@@ -133,8 +145,9 @@ export default function ProductDetails({ product }: { product: Product }) {
                 <button
                   onClick={() => { setLightboxIndex(activeIndex); setLightboxOpen(true); }}
                   className="absolute top-3 left-3 bg-white/80 hover:bg-white w-9 h-9 rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                  aria-label="הגדל תמונה"
                 >
-                  <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
                   </svg>
                 </button>
@@ -145,16 +158,18 @@ export default function ProductDetails({ product }: { product: Product }) {
                     <button
                       onClick={goPrev}
                       className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white w-10 h-10 rounded-full flex items-center justify-center shadow-md transition-colors z-10"
+                      aria-label="תמונה קודמת"
                     >
-                      <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </button>
                     <button
                       onClick={goNext}
                       className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white w-10 h-10 rounded-full flex items-center justify-center shadow-md transition-colors z-10"
+                      aria-label="תמונה הבאה"
                     >
-                      <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                       </svg>
                     </button>
@@ -304,23 +319,31 @@ export default function ProductDetails({ product }: { product: Product }) {
             <div className="mb-8 border-t border-primary/10">
               {accordionItems.map((item) => (
                 <div key={item.key} className="border-b border-primary/10">
-                  <button
-                    onClick={() => toggleAccordion(item.key)}
-                    className="w-full flex items-center justify-between py-4 text-primary font-semibold hover:text-pink transition-colors"
-                  >
-                    <span>{item.label}</span>
-                    <svg
-                      className={`w-5 h-5 transition-transform duration-300 ${
-                        openAccordion === item.key ? "rotate-180" : ""
-                      }`}
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
+                  <h3>
+                    <button
+                      onClick={() => toggleAccordion(item.key)}
+                      className="w-full flex items-center justify-between py-4 text-primary font-semibold hover:text-pink transition-colors"
+                      aria-expanded={openAccordion === item.key}
+                      aria-controls={`accordion-${item.key}`}
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
+                      <span>{item.label}</span>
+                      <svg
+                        className={`w-5 h-5 transition-transform duration-300 ${
+                          openAccordion === item.key ? "rotate-180" : ""
+                        }`}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                  </h3>
                   <div
+                    id={`accordion-${item.key}`}
+                    role="region"
+                    aria-labelledby={`accordion-btn-${item.key}`}
                     className={`overflow-hidden transition-all duration-300 ease-in-out ${
                       openAccordion === item.key ? "max-h-96 opacity-100 pb-4" : "max-h-0 opacity-0"
                     }`}
@@ -362,7 +385,7 @@ export default function ProductDetails({ product }: { product: Product }) {
                   ? "border-pink bg-pink/10"
                   : "border-primary/20 hover:border-pink"
               }`}
-              title={inWishlist ? "הסר מהמועדפים" : "הוסף למועדפים"}
+              aria-label={inWishlist ? "הסר מהמועדפים" : "הוסף למועדפים"}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -385,13 +408,17 @@ export default function ProductDetails({ product }: { product: Product }) {
         <div
           className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center"
           onClick={() => setLightboxOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="תצוגת תמונה מוגדלת"
         >
           {/* Close button */}
           <button
             onClick={() => setLightboxOpen(false)}
             className="absolute top-4 left-4 text-white/70 hover:text-white z-10"
+            aria-label="סגור תצוגה"
           >
-            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -426,8 +453,9 @@ export default function ProductDetails({ product }: { product: Product }) {
                   setLightboxIndex((lightboxIndex - 1 + allImages.length) % allImages.length);
                 }}
                 className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 w-12 h-12 rounded-full flex items-center justify-center transition-colors"
+                aria-label="תמונה קודמת"
               >
-                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </button>
@@ -437,8 +465,9 @@ export default function ProductDetails({ product }: { product: Product }) {
                   setLightboxIndex((lightboxIndex + 1) % allImages.length);
                 }}
                 className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 w-12 h-12 rounded-full flex items-center justify-center transition-colors"
+                aria-label="תמונה הבאה"
               >
-                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
@@ -457,8 +486,9 @@ export default function ProductDetails({ product }: { product: Product }) {
                       ? "border-white scale-110"
                       : "border-transparent opacity-50 hover:opacity-80"
                   }`}
+                  aria-label={`תמונה ${i + 1} מתוך ${allImages.length}`}
                 >
-                  <Image src={img} alt="" fill className="object-cover" />
+                  <Image src={img} alt={`${product.name} - תמונה ${i + 1}`} fill className="object-cover" />
                 </button>
               ))}
             </div>
