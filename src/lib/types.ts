@@ -9,6 +9,9 @@ export interface Product {
   category: string;
   type: ProductType;
   description: string;
+  dimensions: string;
+  shippingInfo: string;
+  fullDetails: string;
 }
 
 export interface CartItem {

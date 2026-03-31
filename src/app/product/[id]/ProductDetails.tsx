@@ -30,6 +30,17 @@ export default function ProductDetails({ product }: { product: Product }) {
   const [selectedFont, setSelectedFont] = useState(FONTS[0].value);
   const [fileName, setFileName] = useState("");
   const [added, setAdded] = useState(false);
+  const [openAccordion, setOpenAccordion] = useState<string | null>(null);
+
+  const toggleAccordion = (key: string) => {
+    setOpenAccordion(openAccordion === key ? null : key);
+  };
+
+  const accordionItems = [
+    { key: "dimensions", label: "מידות", content: product.dimensions },
+    { key: "shipping", label: "משלוחים והחזרות", content: product.shippingInfo },
+    { key: "details", label: "פירוט מלא", content: product.fullDetails },
+  ].filter((item) => item.content);
 
   // Gallery state
   const allImages = [product.image, ...(product.gallery || [])].filter(Boolean);
@@ -264,6 +275,41 @@ export default function ProductDetails({ product }: { product: Product }) {
                   />
                 </label>
               </div>
+            </div>
+          )}
+
+          {/* Accordion */}
+          {accordionItems.length > 0 && (
+            <div className="mb-8 border-t border-primary/10">
+              {accordionItems.map((item) => (
+                <div key={item.key} className="border-b border-primary/10">
+                  <button
+                    onClick={() => toggleAccordion(item.key)}
+                    className="w-full flex items-center justify-between py-4 text-primary font-semibold hover:text-pink transition-colors"
+                  >
+                    <span>{item.label}</span>
+                    <svg
+                      className={`w-5 h-5 transition-transform duration-300 ${
+                        openAccordion === item.key ? "rotate-180" : ""
+                      }`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  <div
+                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                      openAccordion === item.key ? "max-h-96 opacity-100 pb-4" : "max-h-0 opacity-0"
+                    }`}
+                  >
+                    <p className="text-primary/60 text-sm leading-relaxed whitespace-pre-line">
+                      {item.content}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 

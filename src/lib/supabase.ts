@@ -35,6 +35,9 @@ export async function getProducts(): Promise<Product[]> {
     category: p.category_slug,
     type: p.type,
     description: p.description || "",
+    dimensions: p.dimensions || "",
+    shippingInfo: p.shipping_info || "",
+    fullDetails: p.full_details || "",
   }));
 }
 
@@ -54,6 +57,9 @@ export async function getProductById(id: string): Promise<Product | null> {
     category: data.category_slug,
     type: data.type,
     description: data.description || "",
+    dimensions: data.dimensions || "",
+    shippingInfo: data.shipping_info || "",
+    fullDetails: data.full_details || "",
   };
 }
 

@@ -14,6 +14,9 @@ interface ProductRow {
   category_slug: string;
   image: string;
   gallery: string[];
+  dimensions: string;
+  shipping_info: string;
+  full_details: string;
   created_at: string;
 }
 
@@ -30,6 +33,9 @@ const emptyForm = {
   category_slug: "",
   image: "",
   gallery: [] as string[],
+  dimensions: "",
+  shipping_info: "",
+  full_details: "",
 };
 
 export default function AdminProducts() {
@@ -122,6 +128,9 @@ export default function AdminProducts() {
       category_slug: p.category_slug,
       image: p.image || "",
       gallery: p.gallery || [],
+      dimensions: p.dimensions || "",
+      shipping_info: p.shipping_info || "",
+      full_details: p.full_details || "",
     });
     setEditing(p.id);
     setShowForm(true);
@@ -264,6 +273,40 @@ export default function AdminProducts() {
                 disabled={uploadingGallery}
               />
             </label>
+          </div>
+
+          {/* Accordion fields */}
+          <div className="border-t border-primary/10 pt-4 mt-4">
+            <p className="text-sm font-bold text-primary mb-3">שדות אקורדיון (אופציונלי)</p>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-semibold text-primary mb-1">מידות</label>
+                <textarea
+                  value={form.dimensions}
+                  onChange={(e) => setForm({ ...form, dimensions: e.target.value })}
+                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink resize-none h-16 text-sm"
+                  placeholder="לדוגמה: 30x20 ס״מ, משקל 500 גרם"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-primary mb-1">משלוחים והחזרות</label>
+                <textarea
+                  value={form.shipping_info}
+                  onChange={(e) => setForm({ ...form, shipping_info: e.target.value })}
+                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink resize-none h-16 text-sm"
+                  placeholder="לדוגמה: משלוח תוך 3-5 ימי עסקים, החזרה עד 14 יום"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-primary mb-1">פירוט מלא</label>
+                <textarea
+                  value={form.full_details}
+                  onChange={(e) => setForm({ ...form, full_details: e.target.value })}
+                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink resize-none h-24 text-sm"
+                  placeholder="תיאור מפורט של המוצר, חומרים, הוראות טיפול..."
+                />
+              </div>
+            </div>
           </div>
 
           <div className="flex gap-3">
