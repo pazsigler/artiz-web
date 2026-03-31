@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import Image from "next/image";
 import { Product } from "@/lib/types";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 import { useRouter } from "next/navigation";
 
 const COLORS = [
@@ -24,7 +25,9 @@ const FONTS = [
 
 export default function ProductDetails({ product }: { product: Product }) {
   const { addItem } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
   const router = useRouter();
+  const inWishlist = isInWishlist(product.id);
   const [dedication, setDedication] = useState("");
   const [selectedColor, setSelectedColor] = useState(COLORS[0].value);
   const [selectedFont, setSelectedFont] = useState(FONTS[0].value);
@@ -83,6 +86,11 @@ export default function ProductDetails({ product }: { product: Product }) {
     }
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
+  };
+
+  const handleQuickBuy = () => {
+    handleAdd();
+    router.push("/checkout");
   };
 
   return (
@@ -313,16 +321,49 @@ export default function ProductDetails({ product }: { product: Product }) {
             </div>
           )}
 
-          {/* Add to Cart */}
+          {/* Action Buttons */}
+          <div className="flex gap-3">
+            <button
+              onClick={handleAdd}
+              className={`flex-1 py-4 rounded-full text-lg font-semibold transition-colors ${
+                added
+                  ? "bg-green-soft text-white"
+                  : "bg-primary text-white hover:bg-primary/90"
+              }`}
+            >
+              {added ? "נוסף לסל ✓" : "הוסף לסל"}
+            </button>
+
+            {/* Wishlist */}
+            <button
+              onClick={() => toggleWishlist(product.id)}
+              className={`w-14 h-14 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
+                inWishlist
+                  ? "border-pink bg-pink/10"
+                  : "border-primary/20 hover:border-pink"
+              }`}
+              title={inWishlist ? "הסר מהמועדפים" : "הוסף למועדפים"}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className={`w-6 h-6 transition-colors duration-300 ${
+                  inWishlist ? "text-pink" : "text-primary/40"
+                }`}
+                fill={inWishlist ? "currentColor" : "none"}
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Quick Buy */}
           <button
-            onClick={handleAdd}
-            className={`w-full py-4 rounded-full text-lg font-semibold transition-colors ${
-              added
-                ? "bg-green-soft text-white"
-                : "bg-primary text-white hover:bg-primary/90"
-            }`}
+            onClick={handleQuickBuy}
+            className="w-full mt-3 py-4 rounded-full text-lg font-semibold border-2 border-pink text-pink hover:bg-pink hover:text-white transition-colors"
           >
-            {added ? "נוסף לסל ✓" : "הוסף לסל"}
+            רכישה מהירה
           </button>
         </div>
       </div>
