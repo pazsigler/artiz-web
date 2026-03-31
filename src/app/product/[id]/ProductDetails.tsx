@@ -34,6 +34,8 @@ export default function ProductDetails({ product }: { product: Product }) {
   const [fileName, setFileName] = useState("");
   const [added, setAdded] = useState(false);
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   const toggleAccordion = (key: string) => {
     setOpenAccordion(openAccordion === key ? null : key);
@@ -106,17 +108,18 @@ export default function ProductDetails({ product }: { product: Product }) {
         {/* Product Image / Gallery */}
         <div>
           {/* Main Image */}
-          <div className="bg-sky/20 rounded-2xl aspect-square relative overflow-hidden">
+          <div className="bg-sky/20 rounded-2xl aspect-square relative overflow-hidden group">
             {allImages.length > 0 ? (
               <>
                 <div
-                  className={`absolute inset-0 transition-all duration-300 ease-in-out ${
+                  className={`absolute inset-0 transition-all duration-300 ease-in-out cursor-zoom-in ${
                     animating
                       ? direction === "left"
                         ? "opacity-0 translate-x-[-20px]"
                         : "opacity-0 translate-x-[20px]"
                       : "opacity-100 translate-x-0"
                   }`}
+                  onClick={() => { setLightboxIndex(activeIndex); setLightboxOpen(true); }}
                 >
                   <Image
                     src={allImages[activeIndex]}
@@ -125,6 +128,16 @@ export default function ProductDetails({ product }: { product: Product }) {
                     className="object-cover"
                   />
                 </div>
+
+                {/* Zoom icon */}
+                <button
+                  onClick={() => { setLightboxIndex(activeIndex); setLightboxOpen(true); }}
+                  className="absolute top-3 left-3 bg-white/80 hover:bg-white w-9 h-9 rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                >
+                  <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                  </svg>
+                </button>
 
                 {/* Navigation arrows */}
                 {allImages.length > 1 && (
@@ -366,6 +379,92 @@ export default function ProductDetails({ product }: { product: Product }) {
           </div>
         </div>
       </div>
+
+      {/* Lightbox */}
+      {lightboxOpen && allImages.length > 0 && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center"
+          onClick={() => setLightboxOpen(false)}
+        >
+          {/* Close button */}
+          <button
+            onClick={() => setLightboxOpen(false)}
+            className="absolute top-4 left-4 text-white/70 hover:text-white z-10"
+          >
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
+          {/* Counter */}
+          {allImages.length > 1 && (
+            <div className="absolute top-4 right-4 text-white/50 text-sm" dir="ltr">
+              {lightboxIndex + 1} / {allImages.length}
+            </div>
+          )}
+
+          {/* Image */}
+          <div
+            className="relative w-full h-full max-w-5xl max-h-[85vh] mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Image
+              src={allImages[lightboxIndex]}
+              alt={product.name}
+              fill
+              className="object-contain animate-fade-in"
+              sizes="100vw"
+            />
+          </div>
+
+          {/* Navigation arrows */}
+          {allImages.length > 1 && (
+            <>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLightboxIndex((lightboxIndex - 1 + allImages.length) % allImages.length);
+                }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 w-12 h-12 rounded-full flex items-center justify-center transition-colors"
+              >
+                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLightboxIndex((lightboxIndex + 1) % allImages.length);
+                }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 w-12 h-12 rounded-full flex items-center justify-center transition-colors"
+              >
+                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+            </>
+          )}
+
+          {/* Thumbnails */}
+          {allImages.length > 1 && (
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+              {allImages.map((img, i) => (
+                <button
+                  key={i}
+                  onClick={(e) => { e.stopPropagation(); setLightboxIndex(i); }}
+                  className={`relative w-12 h-12 rounded-lg overflow-hidden border-2 transition-all ${
+                    i === lightboxIndex
+                      ? "border-white scale-110"
+                      : "border-transparent opacity-50 hover:opacity-80"
+                  }`}
+                >
+                  <Image src={img} alt="" fill className="object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
