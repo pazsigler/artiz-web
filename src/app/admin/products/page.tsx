@@ -13,6 +13,7 @@ interface ProductRow {
   type: string;
   category_slug: string;
   image: string;
+  gallery: string[];
   created_at: string;
 }
 
@@ -28,6 +29,7 @@ const emptyForm = {
   type: "regular" as string,
   category_slug: "",
   image: "",
+  gallery: [] as string[],
 };
 
 export default function AdminProducts() {
@@ -37,7 +39,9 @@ export default function AdminProducts() {
   const [form, setForm] = useState(emptyForm);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [uploadingGallery, setUploadingGallery] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const galleryRef = useRef<HTMLInputElement>(null);
 
   const load = async () => {
     const [{ data: p }, { data: c }] = await Promise.all([
@@ -59,6 +63,31 @@ export default function AdminProducts() {
     } catch {
       alert("שגיאה בהעלאת התמונה");
     }
+  };
+
+  const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    setUploadingGallery(true);
+    try {
+      const urls: string[] = [];
+      for (const file of Array.from(files)) {
+        const url = await uploadProductImage(file);
+        urls.push(url);
+      }
+      setForm({ ...form, gallery: [...form.gallery, ...urls] });
+    } catch {
+      alert("שגיאה בהעלאת תמונות לגלריה");
+    } finally {
+      setUploadingGallery(false);
+      if (galleryRef.current) galleryRef.current.value = "";
+    }
+  };
+
+  const removeGalleryImage = async (index: number) => {
+    const url = form.gallery[index];
+    await deleteProductImage(url);
+    setForm({ ...form, gallery: form.gallery.filter((_, i) => i !== index) });
   };
 
   const handleSave = async () => {
@@ -92,6 +121,7 @@ export default function AdminProducts() {
       type: p.type,
       category_slug: p.category_slug,
       image: p.image || "",
+      gallery: p.gallery || [],
     });
     setEditing(p.id);
     setShowForm(true);
@@ -100,6 +130,11 @@ export default function AdminProducts() {
   const handleDelete = async (p: ProductRow) => {
     if (!confirm(`למחוק את "${p.name}"?`)) return;
     if (p.image) await deleteProductImage(p.image);
+    if (p.gallery) {
+      for (const url of p.gallery) {
+        await deleteProductImage(url);
+      }
+    }
     await supabase.from("products").delete().eq("id", p.id);
     await load();
   };
@@ -181,8 +216,9 @@ export default function AdminProducts() {
             />
           </div>
 
+          {/* Main Image */}
           <div>
-            <label className="block text-sm font-semibold text-primary mb-1">תמונה</label>
+            <label className="block text-sm font-semibold text-primary mb-1">תמונה ראשית</label>
             <div className="flex items-center gap-4">
               {form.image && (
                 <Image src={form.image} alt="preview" width={80} height={80} className="rounded-xl object-cover" />
@@ -195,6 +231,39 @@ export default function AdminProducts() {
                 className="text-sm"
               />
             </div>
+          </div>
+
+          {/* Gallery */}
+          <div>
+            <label className="block text-sm font-semibold text-primary mb-1">
+              גלריית תמונות (אופציונלי)
+            </label>
+            <div className="flex flex-wrap gap-3 mb-3">
+              {form.gallery.map((url, i) => (
+                <div key={i} className="relative group">
+                  <Image src={url} alt={`gallery ${i + 1}`} width={80} height={80} className="rounded-xl object-cover w-20 h-20" />
+                  <button
+                    type="button"
+                    onClick={() => removeGalleryImage(i)}
+                    className="absolute -top-2 -left-2 bg-red-500 text-white w-5 h-5 rounded-full text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+            <label className="inline-flex items-center gap-2 border border-dashed border-primary/30 rounded-xl px-4 py-2 cursor-pointer hover:border-pink transition-colors text-sm text-primary/60">
+              {uploadingGallery ? "מעלה..." : "+ הוסף תמונות לגלריה"}
+              <input
+                type="file"
+                ref={galleryRef}
+                accept="image/*"
+                multiple
+                onChange={handleGalleryUpload}
+                className="hidden"
+                disabled={uploadingGallery}
+              />
+            </label>
           </div>
 
           <div className="flex gap-3">
@@ -229,6 +298,7 @@ export default function AdminProducts() {
               <div className="font-bold text-primary truncate">{p.name}</div>
               <div className="text-sm text-primary/50">
                 ₪{p.price} · {p.type === "custom" ? "בהתאמה אישית" : "רגיל"}
+                {p.gallery?.length > 0 && ` · ${p.gallery.length} תמונות`}
               </div>
             </div>
             <div className="flex gap-2 flex-shrink-0">

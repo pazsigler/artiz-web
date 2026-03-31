@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Image from "next/image";
 import { Product } from "@/lib/types";
 import { useCart } from "@/context/CartContext";
@@ -31,6 +31,34 @@ export default function ProductDetails({ product }: { product: Product }) {
   const [fileName, setFileName] = useState("");
   const [added, setAdded] = useState(false);
 
+  // Gallery state
+  const allImages = [product.image, ...(product.gallery || [])].filter(Boolean);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [animating, setAnimating] = useState(false);
+  const [direction, setDirection] = useState<"left" | "right">("left");
+
+  const goToImage = useCallback((index: number, dir?: "left" | "right") => {
+    if (index === activeIndex || animating) return;
+    setDirection(dir || (index > activeIndex ? "left" : "right"));
+    setAnimating(true);
+    setTimeout(() => {
+      setActiveIndex(index);
+      setTimeout(() => setAnimating(false), 50);
+    }, 200);
+  }, [activeIndex, animating]);
+
+  const goNext = () => {
+    if (allImages.length <= 1) return;
+    const next = (activeIndex + 1) % allImages.length;
+    goToImage(next, "left");
+  };
+
+  const goPrev = () => {
+    if (allImages.length <= 1) return;
+    const prev = (activeIndex - 1 + allImages.length) % allImages.length;
+    goToImage(prev, "right");
+  };
+
   const handleAdd = () => {
     if (product.type === "custom") {
       addItem(product, 1, {
@@ -52,23 +80,66 @@ export default function ProductDetails({ product }: { product: Product }) {
         onClick={() => router.back()}
         className="text-primary/60 hover:text-primary mb-6 inline-flex items-center gap-1"
       >
-        → חזרה
+        ← חזרה
       </button>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-        {/* Product Image / Preview */}
-        <div className="bg-sky/20 rounded-2xl aspect-square flex items-center justify-center relative overflow-hidden">
-          {product.image && (
-            <Image src={product.image} alt={product.name} fill className="object-cover" />
-          )}
-          {!product.image && !dedication && (
-            <span className="text-6xl text-primary/20">🎁</span>
-          )}
-          {product.type === "custom" && dedication && (
-            <div className="absolute inset-0 flex items-center justify-center p-8 bg-black/20">
-              <div className="text-center">
+        {/* Product Image / Gallery */}
+        <div>
+          {/* Main Image */}
+          <div className="bg-sky/20 rounded-2xl aspect-square relative overflow-hidden">
+            {allImages.length > 0 ? (
+              <>
+                <div
+                  className={`absolute inset-0 transition-all duration-300 ease-in-out ${
+                    animating
+                      ? direction === "left"
+                        ? "opacity-0 translate-x-[-20px]"
+                        : "opacity-0 translate-x-[20px]"
+                      : "opacity-100 translate-x-0"
+                  }`}
+                >
+                  <Image
+                    src={allImages[activeIndex]}
+                    alt={product.name}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+
+                {/* Navigation arrows */}
+                {allImages.length > 1 && (
+                  <>
+                    <button
+                      onClick={goPrev}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white w-10 h-10 rounded-full flex items-center justify-center shadow-md transition-colors z-10"
+                    >
+                      <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={goNext}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white w-10 h-10 rounded-full flex items-center justify-center shadow-md transition-colors z-10"
+                    >
+                      <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                  </>
+                )}
+              </>
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-6xl text-primary/20">🎁</span>
+              </div>
+            )}
+
+            {/* Custom dedication overlay */}
+            {product.type === "custom" && dedication && (
+              <div className="absolute inset-0 flex items-center justify-center p-8 bg-black/20 z-10">
                 <p
-                  className="text-2xl font-semibold break-words max-w-full"
+                  className="text-2xl font-semibold break-words max-w-full text-center"
                   style={{
                     color: selectedColor,
                     fontFamily: selectedFont === "Rubik-bold" ? "Rubik" : selectedFont,
@@ -78,6 +149,25 @@ export default function ProductDetails({ product }: { product: Product }) {
                   {dedication}
                 </p>
               </div>
+            )}
+          </div>
+
+          {/* Thumbnails */}
+          {allImages.length > 1 && (
+            <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
+              {allImages.map((img, i) => (
+                <button
+                  key={i}
+                  onClick={() => goToImage(i)}
+                  className={`relative w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 border-2 transition-all duration-200 ${
+                    i === activeIndex
+                      ? "border-pink scale-105 shadow-md"
+                      : "border-transparent opacity-60 hover:opacity-100"
+                  }`}
+                >
+                  <Image src={img} alt={`${product.name} ${i + 1}`} fill className="object-cover" />
+                </button>
+              ))}
             </div>
           )}
         </div>
