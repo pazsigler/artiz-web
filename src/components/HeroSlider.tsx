@@ -96,6 +96,22 @@ export default function HeroSlider({ slides }: Props) {
 
       {/* Bottom bar: dots + arrows */}
       <div className="absolute bottom-4 left-4 flex items-center gap-3 z-20">
+        {/* Dots */}
+        <div className="flex gap-1.5">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrent(i)}
+            className={`rounded-full transition-all duration-300 ${
+              i === current
+                ? "w-8 h-3 bg-white"
+                : "w-3 h-3 bg-white/50 hover:bg-white/70"
+            }`}
+            aria-label={`סלייד ${i + 1}`}
+          />
+        ))}
+        </div>
+
         {/* Arrows */}
         <button
           onClick={goNext}
@@ -115,22 +131,6 @@ export default function HeroSlider({ slides }: Props) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
           </svg>
         </button>
-
-        {/* Dots */}
-        <div className="flex gap-1.5 mr-1">
-        {slides.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrent(i)}
-            className={`rounded-full transition-all duration-300 ${
-              i === current
-                ? "w-8 h-3 bg-white"
-                : "w-3 h-3 bg-white/50 hover:bg-white/70"
-            }`}
-            aria-label={`סלייד ${i + 1}`}
-          />
-        ))}
-        </div>
       </div>
     </section>
   );
