@@ -20,7 +20,7 @@ export default function AccessibilityPage() {
         <p>ניתן לפנות אלינו:</p>
         <ul className="list-disc pr-6 space-y-1">
           <li>אימייל: info@artiz.co.il</li>
-          <li>טלפון: 050-0000000</li>
+          <li>טלפון: 052-6579230</li>
         </ul>
 
         <p className="text-sm text-primary/40">הצהרה זו עודכנה לאחרונה בתאריך {new Date().toLocaleDateString("he-IL")}.</p>
