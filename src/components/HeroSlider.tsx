@@ -114,18 +114,18 @@ export default function HeroSlider({ slides }: Props) {
 
         {/* Arrows */}
         <button
-          onClick={goNext}
+          onClick={goPrev}
           className="text-white/70 hover:text-white transition-colors"
-          aria-label="הבא"
+          aria-label="הקודם"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
         <button
-          onClick={goPrev}
+          onClick={goNext}
           className="text-white/70 hover:text-white transition-colors"
-          aria-label="הקודם"
+          aria-label="הבא"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
