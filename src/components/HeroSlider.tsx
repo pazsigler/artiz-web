@@ -94,28 +94,30 @@ export default function HeroSlider({ slides }: Props) {
       ))}
       </div>
 
-      {/* Arrows */}
-      <button
-        onClick={goPrev}
-        className="absolute top-1/2 right-3 -translate-y-1/2 w-8 h-8 rounded-full bg-white/60 hover:bg-white text-primary flex items-center justify-center transition-colors shadow-sm z-20"
-        aria-label="הקודם"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
-      <button
-        onClick={goNext}
-        className="absolute top-1/2 left-3 -translate-y-1/2 w-8 h-8 rounded-full bg-white/60 hover:bg-white text-primary flex items-center justify-center transition-colors shadow-sm z-20"
-        aria-label="הבא"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
+      {/* Bottom bar: dots + arrows */}
+      <div className="absolute bottom-4 left-4 flex items-center gap-3 z-20">
+        {/* Arrows */}
+        <button
+          onClick={goNext}
+          className="text-white/70 hover:text-white transition-colors"
+          aria-label="הבא"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button
+          onClick={goPrev}
+          className="text-white/70 hover:text-white transition-colors"
+          aria-label="הקודם"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
 
-      {/* Dots */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+        {/* Dots */}
+        <div className="flex gap-1.5 mr-1">
         {slides.map((_, i) => (
           <button
             key={i}
@@ -128,6 +130,7 @@ export default function HeroSlider({ slides }: Props) {
             aria-label={`סלייד ${i + 1}`}
           />
         ))}
+        </div>
       </div>
     </section>
   );
