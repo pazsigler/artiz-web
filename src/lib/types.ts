@@ -38,6 +38,6 @@ export interface HeroSlide {
   subtitle: string;
   cta: string;
   href: string;
-  bgGradient: string;
-  emoji: string;
+  imageDesktop: string;
+  imageMobile: string;
 }

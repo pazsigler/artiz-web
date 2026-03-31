@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import Image from "next/image";
 import { supabase } from "@/lib/supabase";
+import { uploadSlideImage } from "@/lib/storage";
 
 interface SlideRow {
   id: string;
@@ -9,8 +11,8 @@ interface SlideRow {
   subtitle: string;
   cta: string;
   href: string;
-  bg_gradient: string;
-  emoji: string;
+  image_desktop: string;
+  image_mobile: string;
   active: boolean;
   sort_order: number;
 }
@@ -20,8 +22,8 @@ const emptySlide = {
   subtitle: "",
   cta: "לצפייה במוצרים",
   href: "/category",
-  bg_gradient: "from-pink/20 to-sky/20",
-  emoji: "🎁",
+  image_desktop: "",
+  image_mobile: "",
   active: true,
   sort_order: 0,
 };
@@ -32,6 +34,10 @@ export default function AdminSlides() {
   const [form, setForm] = useState(emptySlide);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [uploadingDesktop, setUploadingDesktop] = useState(false);
+  const [uploadingMobile, setUploadingMobile] = useState(false);
+  const desktopRef = useRef<HTMLInputElement>(null);
+  const mobileRef = useRef<HTMLInputElement>(null);
 
   const load = async () => {
     const { data } = await supabase.from("hero_slides").select("*").order("sort_order");
@@ -39,6 +45,30 @@ export default function AdminSlides() {
   };
 
   useEffect(() => { load(); }, []);
+
+  const handleUploadDesktop = async (file: File) => {
+    setUploadingDesktop(true);
+    try {
+      const url = await uploadSlideImage(file);
+      setForm((prev) => ({ ...prev, image_desktop: url }));
+    } catch {
+      alert("שגיאה בהעלאת תמונה");
+    } finally {
+      setUploadingDesktop(false);
+    }
+  };
+
+  const handleUploadMobile = async (file: File) => {
+    setUploadingMobile(true);
+    try {
+      const url = await uploadSlideImage(file);
+      setForm((prev) => ({ ...prev, image_mobile: url }));
+    } catch {
+      alert("שגיאה בהעלאת תמונה");
+    } finally {
+      setUploadingMobile(false);
+    }
+  };
 
   const handleSave = async () => {
     if (!form.title) {
@@ -69,8 +99,8 @@ export default function AdminSlides() {
       subtitle: s.subtitle || "",
       cta: s.cta,
       href: s.href,
-      bg_gradient: s.bg_gradient,
-      emoji: s.emoji || "",
+      image_desktop: s.image_desktop || "",
+      image_mobile: s.image_mobile || "",
       active: s.active,
       sort_order: s.sort_order,
     });
@@ -144,26 +174,102 @@ export default function AdminSlides() {
                 dir="ltr"
               />
             </div>
+          </div>
+
+          {/* Image uploads */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Desktop image */}
             <div>
-              <label className="block text-sm font-semibold text-primary mb-1">גרדיאנט רקע</label>
+              <label className="block text-sm font-semibold text-primary mb-1">תמונת רקע - דסקטופ</label>
               <input
-                type="text"
-                value={form.bg_gradient}
-                onChange={(e) => setForm({ ...form, bg_gradient: e.target.value })}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
-                dir="ltr"
-                placeholder="from-pink/20 to-sky/20"
+                ref={desktopRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleUploadDesktop(file);
+                }}
               />
+              {form.image_desktop ? (
+                <div className="relative w-full h-40 rounded-xl overflow-hidden border border-primary/10">
+                  <Image src={form.image_desktop} alt="תמונת דסקטופ" fill className="object-cover" />
+                  <button
+                    onClick={() => { setForm({ ...form, image_desktop: "" }); if (desktopRef.current) desktopRef.current.value = ""; }}
+                    className="absolute top-2 left-2 bg-white/80 hover:bg-white rounded-full w-7 h-7 flex items-center justify-center text-red-500 text-sm font-bold shadow"
+                    aria-label="הסר תמונת דסקטופ"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => desktopRef.current?.click()}
+                  disabled={uploadingDesktop}
+                  className="w-full h-40 border-2 border-dashed border-primary/20 rounded-xl flex flex-col items-center justify-center gap-2 text-primary/40 hover:border-pink hover:text-pink transition-colors"
+                >
+                  {uploadingDesktop ? (
+                    <span className="text-sm">מעלה...</span>
+                  ) : (
+                    <>
+                      <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                      </svg>
+                      <span className="text-sm font-semibold">העלה תמונת דסקטופ</span>
+                      <span className="text-xs">מומלץ: 1920x600</span>
+                    </>
+                  )}
+                </button>
+              )}
             </div>
+
+            {/* Mobile image */}
             <div>
-              <label className="block text-sm font-semibold text-primary mb-1">אימוג׳י</label>
+              <label className="block text-sm font-semibold text-primary mb-1">תמונת רקע - מובייל</label>
               <input
-                type="text"
-                value={form.emoji}
-                onChange={(e) => setForm({ ...form, emoji: e.target.value })}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                ref={mobileRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleUploadMobile(file);
+                }}
               />
+              {form.image_mobile ? (
+                <div className="relative w-full h-40 rounded-xl overflow-hidden border border-primary/10">
+                  <Image src={form.image_mobile} alt="תמונת מובייל" fill className="object-cover" />
+                  <button
+                    onClick={() => { setForm({ ...form, image_mobile: "" }); if (mobileRef.current) mobileRef.current.value = ""; }}
+                    className="absolute top-2 left-2 bg-white/80 hover:bg-white rounded-full w-7 h-7 flex items-center justify-center text-red-500 text-sm font-bold shadow"
+                    aria-label="הסר תמונת מובייל"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => mobileRef.current?.click()}
+                  disabled={uploadingMobile}
+                  className="w-full h-40 border-2 border-dashed border-primary/20 rounded-xl flex flex-col items-center justify-center gap-2 text-primary/40 hover:border-pink hover:text-pink transition-colors"
+                >
+                  {uploadingMobile ? (
+                    <span className="text-sm">מעלה...</span>
+                  ) : (
+                    <>
+                      <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                      </svg>
+                      <span className="text-sm font-semibold">העלה תמונת מובייל</span>
+                      <span className="text-xs">מומלץ: 800x800</span>
+                    </>
+                  )}
+                </button>
+              )}
             </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-semibold text-primary mb-1">סדר</label>
               <input
@@ -207,7 +313,13 @@ export default function AdminSlides() {
       <div className="space-y-3">
         {slides.map((s) => (
           <div key={s.id} className="flex items-center gap-4 bg-white border border-primary/10 rounded-xl p-4">
-            <span className="text-3xl">{s.emoji}</span>
+            <div className="w-20 h-14 rounded-lg overflow-hidden bg-sky/20 flex-shrink-0 relative">
+              {s.image_desktop ? (
+                <Image src={s.image_desktop} alt="" fill className="object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-primary/20 text-xs">ללא תמונה</div>
+              )}
+            </div>
             <div className="flex-1 min-w-0">
               <div className="font-bold text-primary truncate">{s.title}</div>
               <div className="text-sm text-primary/50">{s.subtitle}</div>

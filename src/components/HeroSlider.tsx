@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { HeroSlide } from "@/lib/types";
 
 interface Props {
@@ -10,23 +11,19 @@ interface Props {
 
 export default function HeroSlider({ slides }: Props) {
   const [current, setCurrent] = useState(0);
-  const [direction, setDirection] = useState<"next" | "prev">("next");
 
   const goTo = useCallback(
     (index: number) => {
-      setDirection(index > current ? "next" : "prev");
       setCurrent(index);
     },
-    [current]
+    []
   );
 
   const goNext = useCallback(() => {
-    setDirection("next");
     setCurrent((prev) => (prev + 1) % slides.length);
   }, [slides.length]);
 
   const goPrev = useCallback(() => {
-    setDirection("prev");
     setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
   }, [slides.length]);
 
@@ -43,25 +40,44 @@ export default function HeroSlider({ slides }: Props) {
       {/* Slide */}
       <div
         key={slide.id}
-        className={`bg-gradient-to-l ${slide.bgGradient} py-16 md:py-28 transition-all duration-500 animate-fade-in`}
+        className="relative py-16 md:py-28 transition-all duration-500 animate-fade-in"
       >
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-8">
-          <div className="flex-1 text-center md:text-right">
-            <h1 className="text-4xl md:text-6xl font-bold text-primary mb-4">
+        {/* Background images */}
+        {slide.imageMobile && (
+          <Image
+            src={slide.imageMobile}
+            alt=""
+            fill
+            className="object-cover md:hidden"
+            priority={current === 0}
+          />
+        )}
+        {slide.imageDesktop && (
+          <Image
+            src={slide.imageDesktop}
+            alt=""
+            fill
+            className="object-cover hidden md:block"
+            priority={current === 0}
+          />
+        )}
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-black/30" />
+
+        <div className="max-w-7xl mx-auto px-6 flex flex-col items-center md:items-start relative z-10">
+          <div className="text-center md:text-right max-w-2xl">
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">
               {slide.title}
             </h1>
-            <p className="text-lg md:text-xl text-primary/70 mb-8 max-w-lg md:max-w-none">
+            <p className="text-lg md:text-xl text-white/90 mb-8 drop-shadow">
               {slide.subtitle}
             </p>
             <Link
               href={slide.href}
-              className="inline-block bg-primary text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-primary/90 transition-colors"
+              className="inline-block bg-white text-primary px-8 py-3 rounded-full text-lg font-semibold hover:bg-white/90 transition-colors shadow-lg"
             >
               {slide.cta}
             </Link>
-          </div>
-          <div className="text-[100px] md:text-[160px] leading-none shrink-0">
-            {slide.emoji}
           </div>
         </div>
       </div>
@@ -94,8 +110,8 @@ export default function HeroSlider({ slides }: Props) {
             onClick={() => goTo(i)}
             className={`rounded-full transition-all duration-300 ${
               i === current
-                ? "w-8 h-3 bg-primary"
-                : "w-3 h-3 bg-primary/25 hover:bg-primary/40"
+                ? "w-8 h-3 bg-white"
+                : "w-3 h-3 bg-white/50 hover:bg-white/70"
             }`}
             aria-label={`סלייד ${i + 1}`}
           />

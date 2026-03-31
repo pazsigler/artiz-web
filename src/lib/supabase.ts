@@ -98,8 +98,8 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
     subtitle: s.subtitle || "",
     cta: s.cta,
     href: s.href,
-    bgGradient: s.bg_gradient,
-    emoji: s.emoji || "",
+    imageDesktop: s.image_desktop || "",
+    imageMobile: s.image_mobile || "",
   }));
 }
 
