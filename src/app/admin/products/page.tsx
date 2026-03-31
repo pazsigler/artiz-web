@@ -1,0 +1,256 @@
+"use client";
+
+import { useEffect, useState, useRef } from "react";
+import { supabase } from "@/lib/supabase";
+import { uploadProductImage, deleteProductImage } from "@/lib/storage";
+import Image from "next/image";
+
+interface ProductRow {
+  id: string;
+  name: string;
+  price: number;
+  description: string;
+  type: string;
+  category_slug: string;
+  image: string;
+  created_at: string;
+}
+
+interface CategoryRow {
+  slug: string;
+  name: string;
+}
+
+const emptyForm = {
+  name: "",
+  price: 0,
+  description: "",
+  type: "regular" as string,
+  category_slug: "",
+  image: "",
+};
+
+export default function AdminProducts() {
+  const [products, setProducts] = useState<ProductRow[]>([]);
+  const [categories, setCategories] = useState<CategoryRow[]>([]);
+  const [editing, setEditing] = useState<string | null>(null);
+  const [form, setForm] = useState(emptyForm);
+  const [showForm, setShowForm] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const load = async () => {
+    const [{ data: p }, { data: c }] = await Promise.all([
+      supabase.from("products").select("*").order("created_at", { ascending: false }),
+      supabase.from("categories").select("slug, name").order("created_at"),
+    ]);
+    if (p) setProducts(p);
+    if (c) setCategories(c);
+  };
+
+  useEffect(() => { load(); }, []);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const url = await uploadProductImage(file);
+      setForm({ ...form, image: url });
+    } catch {
+      alert("שגיאה בהעלאת התמונה");
+    }
+  };
+
+  const handleSave = async () => {
+    if (!form.name || !form.price || !form.category_slug) {
+      alert("נא למלא שם, מחיר וקטגוריה");
+      return;
+    }
+    setSaving(true);
+    try {
+      if (editing) {
+        await supabase.from("products").update(form).eq("id", editing);
+      } else {
+        await supabase.from("products").insert(form);
+      }
+      setShowForm(false);
+      setEditing(null);
+      setForm(emptyForm);
+      await load();
+    } catch {
+      alert("שגיאה בשמירה");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleEdit = (p: ProductRow) => {
+    setForm({
+      name: p.name,
+      price: p.price,
+      description: p.description || "",
+      type: p.type,
+      category_slug: p.category_slug,
+      image: p.image || "",
+    });
+    setEditing(p.id);
+    setShowForm(true);
+  };
+
+  const handleDelete = async (p: ProductRow) => {
+    if (!confirm(`למחוק את "${p.name}"?`)) return;
+    if (p.image) await deleteProductImage(p.image);
+    await supabase.from("products").delete().eq("id", p.id);
+    await load();
+  };
+
+  const handleNew = () => {
+    setForm(emptyForm);
+    setEditing(null);
+    setShowForm(true);
+  };
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold text-primary">ניהול מוצרים</h2>
+        <button
+          onClick={handleNew}
+          className="bg-pink text-white px-6 py-2 rounded-full font-semibold hover:bg-pink/90 transition-colors text-sm"
+        >
+          + מוצר חדש
+        </button>
+      </div>
+
+      {showForm && (
+        <div className="bg-sky/5 rounded-2xl p-6 mb-8 space-y-4">
+          <h3 className="font-bold text-primary">{editing ? "עריכת מוצר" : "מוצר חדש"}</h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-semibold text-primary mb-1">שם המוצר</label>
+              <input
+                type="text"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-primary mb-1">מחיר (₪)</label>
+              <input
+                type="number"
+                value={form.price}
+                onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                dir="ltr"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-primary mb-1">קטגוריה</label>
+              <select
+                value={form.category_slug}
+                onChange={(e) => setForm({ ...form, category_slug: e.target.value })}
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+              >
+                <option value="">בחר קטגוריה</option>
+                {categories.map((c) => (
+                  <option key={c.slug} value={c.slug}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-primary mb-1">סוג</label>
+              <select
+                value={form.type}
+                onChange={(e) => setForm({ ...form, type: e.target.value })}
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+              >
+                <option value="regular">רגיל</option>
+                <option value="custom">בהתאמה אישית</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-primary mb-1">תיאור</label>
+            <textarea
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink resize-none h-20"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-primary mb-1">תמונה</label>
+            <div className="flex items-center gap-4">
+              {form.image && (
+                <Image src={form.image} alt="preview" width={80} height={80} className="rounded-xl object-cover" />
+              )}
+              <input
+                type="file"
+                ref={fileRef}
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="text-sm"
+              />
+            </div>
+          </div>
+
+          <div className="flex gap-3">
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="bg-primary text-white px-8 py-2 rounded-full font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50"
+            >
+              {saving ? "שומר..." : "שמור"}
+            </button>
+            <button
+              onClick={() => { setShowForm(false); setEditing(null); }}
+              className="border border-primary/20 text-primary px-8 py-2 rounded-full font-semibold hover:bg-primary/5 transition-colors"
+            >
+              ביטול
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="space-y-3">
+        {products.map((p) => (
+          <div key={p.id} className="flex items-center gap-4 bg-white border border-primary/10 rounded-xl p-4">
+            <div className="w-14 h-14 rounded-xl bg-sky/10 flex items-center justify-center overflow-hidden flex-shrink-0">
+              {p.image ? (
+                <Image src={p.image} alt={p.name} width={56} height={56} className="object-cover w-full h-full" />
+              ) : (
+                <span className="text-2xl">📦</span>
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="font-bold text-primary truncate">{p.name}</div>
+              <div className="text-sm text-primary/50">
+                ₪{p.price} · {p.type === "custom" ? "בהתאמה אישית" : "רגיל"}
+              </div>
+            </div>
+            <div className="flex gap-2 flex-shrink-0">
+              <button
+                onClick={() => handleEdit(p)}
+                className="text-primary/50 hover:text-primary text-sm font-semibold"
+              >
+                ערוך
+              </button>
+              <button
+                onClick={() => handleDelete(p)}
+                className="text-red-400 hover:text-red-600 text-sm font-semibold"
+              >
+                מחק
+              </button>
+            </div>
+          </div>
+        ))}
+        {products.length === 0 && (
+          <p className="text-center text-primary/40 py-8">אין מוצרים עדיין</p>
+        )}
+      </div>
+    </div>
+  );
+}

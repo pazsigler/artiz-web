@@ -1,26 +1,55 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@font-face {
+  font-family: "Einstein";
+  src: url("/einstein-light.woff2") format("woff2"),
+    url("/einstein-light.woff") format("woff"),
+    url("/einstein-light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Einstein";
+  src: url("/einstein-bold.woff2") format("woff2"),
+    url("/einstein-bold.woff") format("woff"),
+    url("/einstein-bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-primary: #384850;
+  --color-pink: #f38eb3;
+  --color-sky: #c7e9f2;
+  --color-purple-soft: #cc90b7;
+  --color-green-soft: #b1d9a3;
+  --color-orange-soft: #fed194;
+  --color-yellow-soft: #fee580;
+  --color-lavender: #d1c4e0;
+  --color-teal: #83adb5;
+  --font-sans: "Einstein", Arial, Helvetica, sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #ffffff;
+  color: #384850;
+  font-family: "Einstein", Arial, Helvetica, sans-serif;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out;
 }
