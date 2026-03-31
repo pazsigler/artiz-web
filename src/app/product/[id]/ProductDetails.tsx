@@ -322,10 +322,10 @@ export default function ProductDetails({ product }: { product: Product }) {
           )}
 
           {/* Action Buttons */}
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             <button
               onClick={handleAdd}
-              className={`flex-1 py-4 rounded-full text-lg font-semibold transition-colors ${
+              className={`flex-1 py-3 rounded-full font-semibold transition-colors ${
                 added
                   ? "bg-green-soft text-white"
                   : "bg-primary text-white hover:bg-primary/90"
@@ -334,10 +334,17 @@ export default function ProductDetails({ product }: { product: Product }) {
               {added ? "נוסף לסל ✓" : "הוסף לסל"}
             </button>
 
+            <button
+              onClick={handleQuickBuy}
+              className="flex-1 py-3 rounded-full font-semibold border-2 border-pink text-pink hover:bg-pink hover:text-white transition-colors"
+            >
+              רכישה מהירה
+            </button>
+
             {/* Wishlist */}
             <button
               onClick={() => toggleWishlist(product.id)}
-              className={`w-14 h-14 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
+              className={`w-12 h-12 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
                 inWishlist
                   ? "border-pink bg-pink/10"
                   : "border-primary/20 hover:border-pink"
@@ -346,7 +353,7 @@ export default function ProductDetails({ product }: { product: Product }) {
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className={`w-6 h-6 transition-colors duration-300 ${
+                className={`w-5 h-5 transition-colors duration-300 ${
                   inWishlist ? "text-pink" : "text-primary/40"
                 }`}
                 fill={inWishlist ? "currentColor" : "none"}
@@ -357,14 +364,6 @@ export default function ProductDetails({ product }: { product: Product }) {
               </svg>
             </button>
           </div>
-
-          {/* Quick Buy */}
-          <button
-            onClick={handleQuickBuy}
-            className="w-full mt-3 py-4 rounded-full text-lg font-semibold border-2 border-pink text-pink hover:bg-pink hover:text-white transition-colors"
-          >
-            רכישה מהירה
-          </button>
         </div>
       </div>
     </div>
