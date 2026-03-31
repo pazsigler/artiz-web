@@ -34,9 +34,6 @@ export default async function Home() {
       {/* Categories */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-primary text-center mb-10">
-            קטגוריות
-          </h2>
           <div className="grid grid-cols-3 md:grid-cols-8 gap-6 justify-items-center">
             {categories.map((cat, i) => (
               <Link
