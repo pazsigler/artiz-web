@@ -14,10 +14,17 @@ export default function Header() {
   const { user } = useAuth();
   const { wishlist } = useWishlist();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     getCategories().then(setCategories);
+  }, []);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   // Close menu on Escape key
@@ -34,7 +41,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="bg-primary text-white sticky top-0 z-50" role="banner">
+      <header className={`text-white sticky top-0 z-50 transition-all duration-500 ease-in-out ${scrolled ? "bg-primary/90 backdrop-blur-md shadow-lg" : "bg-primary"}`} role="banner">
         <div className="w-full px-6 py-3 flex items-center justify-between">
           {/* Right side - Hamburger menu */}
           <button
