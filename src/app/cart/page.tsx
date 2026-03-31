@@ -9,7 +9,6 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center">
-        <span className="text-6xl block mb-6">🛒</span>
         <h1 className="text-3xl font-bold text-primary mb-4">סל הקניות ריק</h1>
         <p className="text-primary/60 mb-8">עדיין לא הוספת מוצרים לסל</p>
         <Link
@@ -32,11 +31,6 @@ export default function CartPage() {
             key={`${item.product.id}-${index}`}
             className="bg-white rounded-2xl shadow-sm p-6 flex flex-col sm:flex-row gap-4"
           >
-            {/* Product Image */}
-            <div className="w-24 h-24 bg-sky/20 rounded-xl flex items-center justify-center shrink-0">
-              <span className="text-2xl">🎁</span>
-            </div>
-
             {/* Product Info */}
             <div className="flex-1">
               <div className="flex items-start justify-between">

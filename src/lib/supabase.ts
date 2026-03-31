@@ -63,6 +63,28 @@ export async function getProductById(id: string): Promise<Product | null> {
   };
 }
 
+export async function getProductsByIds(ids: string[]): Promise<Product[]> {
+  if (ids.length === 0) return [];
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .in("id", ids);
+  if (error) throw error;
+  return data.map((p) => ({
+    id: p.id,
+    name: p.name,
+    price: p.price,
+    image: p.image || "",
+    gallery: p.gallery || [],
+    category: p.category_slug,
+    type: p.type,
+    description: p.description || "",
+    dimensions: p.dimensions || "",
+    shippingInfo: p.shipping_info || "",
+    fullDetails: p.full_details || "",
+  }));
+}
+
 export async function getHeroSlides(): Promise<HeroSlide[]> {
   const { data, error } = await supabase
     .from("hero_slides")
