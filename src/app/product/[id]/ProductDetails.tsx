@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Product } from "@/lib/types";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
@@ -57,10 +58,15 @@ export default function ProductDetails({ product }: { product: Product }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         {/* Product Image / Preview */}
         <div className="bg-sky/20 rounded-2xl aspect-square flex items-center justify-center relative overflow-hidden">
-          {product.type === "custom" && dedication ? (
-            <div className="absolute inset-0 flex items-center justify-center p-8">
+          {product.image && (
+            <Image src={product.image} alt={product.name} fill className="object-cover" />
+          )}
+          {!product.image && !dedication && (
+            <span className="text-6xl text-primary/20">🎁</span>
+          )}
+          {product.type === "custom" && dedication && (
+            <div className="absolute inset-0 flex items-center justify-center p-8 bg-black/20">
               <div className="text-center">
-                <span className="text-5xl mb-4 block">🎁</span>
                 <p
                   className="text-2xl font-semibold break-words max-w-full"
                   style={{
@@ -73,8 +79,6 @@ export default function ProductDetails({ product }: { product: Product }) {
                 </p>
               </div>
             </div>
-          ) : (
-            <span className="text-6xl text-primary/20">🎁</span>
           )}
         </div>
 
