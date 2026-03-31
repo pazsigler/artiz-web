@@ -38,6 +38,8 @@ const emptyForm = {
   full_details: "",
 };
 
+type SortKey = "created_at" | "name" | "category_slug";
+
 export default function AdminProducts() {
   const [products, setProducts] = useState<ProductRow[]>([]);
   const [categories, setCategories] = useState<CategoryRow[]>([]);
@@ -46,6 +48,8 @@ export default function AdminProducts() {
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploadingGallery, setUploadingGallery] = useState(false);
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState<SortKey>("created_at");
   const fileRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLInputElement>(null);
 
@@ -154,9 +158,25 @@ export default function AdminProducts() {
     setShowForm(true);
   };
 
+  const filteredProducts = products
+    .filter((p) => {
+      if (!search) return true;
+      const q = search.toLowerCase();
+      return (
+        p.name.toLowerCase().includes(q) ||
+        p.description?.toLowerCase().includes(q) ||
+        p.category_slug.toLowerCase().includes(q)
+      );
+    })
+    .sort((a, b) => {
+      if (sortBy === "name") return a.name.localeCompare(b.name, "he");
+      if (sortBy === "category_slug") return a.category_slug.localeCompare(b.category_slug, "he");
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-primary">ניהול מוצרים</h2>
         <button
           onClick={handleNew}
@@ -164,6 +184,38 @@ export default function AdminProducts() {
         >
           + מוצר חדש
         </button>
+      </div>
+
+      {/* Search & Sort */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        <div className="flex-1">
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="חיפוש מוצר..."
+            className="w-full border border-primary/20 rounded-xl p-2.5 text-sm focus:outline-none focus:border-pink"
+          />
+        </div>
+        <div className="flex gap-2">
+          {([
+            { key: "created_at" as SortKey, label: "תאריך" },
+            { key: "name" as SortKey, label: "שם" },
+            { key: "category_slug" as SortKey, label: "קטגוריה" },
+          ]).map((s) => (
+            <button
+              key={s.key}
+              onClick={() => setSortBy(s.key)}
+              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
+                sortBy === s.key
+                  ? "bg-primary text-white"
+                  : "bg-primary/5 text-primary hover:bg-primary/10"
+              }`}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {showForm && (
@@ -328,7 +380,7 @@ export default function AdminProducts() {
       )}
 
       <div className="space-y-3">
-        {products.map((p) => (
+        {filteredProducts.map((p) => (
           <div key={p.id} className="flex items-center gap-4 bg-white border border-primary/10 rounded-xl p-4">
             <div className="w-14 h-14 rounded-xl bg-sky/10 flex items-center justify-center overflow-hidden flex-shrink-0">
               {p.image ? (
@@ -360,8 +412,10 @@ export default function AdminProducts() {
             </div>
           </div>
         ))}
-        {products.length === 0 && (
-          <p className="text-center text-primary/40 py-8">אין מוצרים עדיין</p>
+        {filteredProducts.length === 0 && (
+          <p className="text-center text-primary/40 py-8">
+            {search ? "לא נמצאו מוצרים" : "אין מוצרים עדיין"}
+          </p>
         )}
       </div>
     </div>
