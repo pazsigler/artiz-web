@@ -5,10 +5,12 @@ interface Props {
 
 export default function CategoryIcon({ slug, className = "w-8 h-8" }: Props) {
   const icons: Record<string, React.ReactNode> = {
-    // חגים - Star of David
+    // חגים - רימון
     holidays: (
       <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <polygon points="12,2 14.5,9 22,9 16,13.5 18,21 12,17 6,21 8,13.5 2,9 9.5,9" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 2v2m0 0c-1 0-2 .5-2 .5S9 5.5 9 5s.5-1 1-1h4c.5 0 1 .5 1 1s-1 .5-2 .5" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4c-4 0-7 3.5-7 8s3 9 7 9 7-4.5 7-9-3-8-7-8Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v5m-3-2.5h6" />
       </svg>
     ),
     // סוף שנה - Graduation cap
@@ -17,16 +19,19 @@ export default function CategoryIcon({ slug, className = "w-8 h-8" }: Props) {
         <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15v-3.75m0 0h-.008v.008H6.75V11.25Z" />
       </svg>
     ),
-    // יודאיקה - Menorah / book
+    // יודאיקה - מגן דוד
     judaica: (
       <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 2l5.196 9H6.804L12 2Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 22l-5.196-9h10.392L12 22Z" />
       </svg>
     ),
-    // גיוס - Shield
+    // גיוס - כומתה
     army: (
       <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4 17c0-1 2-3 8-3s8 2 8 3" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M5 17c0-4 2.5-8 7-10 4.5 2 7 6 7 10" />
+        <circle cx="7" cy="17" r="1" />
       </svg>
     ),
     // ימי הולדת - Cake
@@ -41,11 +46,12 @@ export default function CategoryIcon({ slug, className = "w-8 h-8" }: Props) {
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c-3.3 0-6 3.134-6 7 0 3.866 2.7 7 6 7s6-3.134 6-7c0-3.866-2.7-7-6-7Zm0 14v4m-2-2h4" />
       </svg>
     ),
-    // מזכרות - Camera
+    // מזכרות - נר
     souvenirs: (
       <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c-.5 1-1.5 2-1.5 3 0 .828.672 1.5 1.5 1.5s1.5-.672 1.5-1.5c0-1-1-2-1.5-3Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M10 8h4v12h-4V8Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M8 20h8" />
       </svg>
     ),
     // מארזים - Gift box
