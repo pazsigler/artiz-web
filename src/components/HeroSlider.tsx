@@ -28,12 +28,13 @@ export default function HeroSlider({ slides }: Props) {
 
   return (
     <section className="relative overflow-hidden" aria-label="באנרים" aria-roledescription="קרוסלה">
-      {/* All slides stacked, only current visible */}
+      {/* All slides stacked absolutely, only current visible */}
+      <div className="relative h-[350px] md:h-[500px]">
       {slides.map((slide, i) => (
         <div
           key={slide.id}
-          className={`relative py-16 md:py-28 transition-opacity duration-500 ${
-            i === current ? "opacity-100" : "opacity-0 absolute inset-0 pointer-events-none"
+          className={`absolute inset-0 transition-opacity duration-500 ${
+            i === current ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
           }`}
           aria-hidden={i !== current}
         >
@@ -65,7 +66,7 @@ export default function HeroSlider({ slides }: Props) {
             <div className="absolute inset-0 bg-black/30" />
           )}
 
-          <div className="max-w-7xl mx-auto px-6 flex flex-col items-center md:items-start relative z-10">
+          <div className="max-w-7xl mx-auto px-6 flex flex-col items-center md:items-start relative z-10 h-full justify-center">
             <div className="text-center md:text-right max-w-2xl">
               <h1 className={`text-4xl md:text-6xl font-bold mb-4 ${
                 slide.imageDesktop || slide.imageMobile ? "text-white drop-shadow-lg" : "text-primary"
@@ -91,6 +92,7 @@ export default function HeroSlider({ slides }: Props) {
           </div>
         </div>
       ))}
+      </div>
 
       {/* Arrows */}
       <button
