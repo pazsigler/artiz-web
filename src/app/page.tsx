@@ -3,6 +3,7 @@ import { getCategories, getProducts, getNewProducts, getHeroSlides } from "@/lib
 import ProductCard from "@/components/ProductCard";
 import HeroSlider from "@/components/HeroSlider";
 import CategoryIcon from "@/components/CategoryIcon";
+import BulkOrderForm from "@/components/BulkOrderForm";
 
 const circleColors = [
   "bg-pink/15",
@@ -91,6 +92,9 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* Bulk Order Form */}
+      <BulkOrderForm />
     </>
   );
 }
