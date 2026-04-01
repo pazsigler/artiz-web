@@ -44,6 +44,10 @@ export default function AdminPages() {
   };
 
   const handleEdit = (p: PageRow) => {
+    if (p.slug === "contact") {
+      handleEditContact(p);
+      return;
+    }
     setForm({ title: p.title, content: p.content || "", image: p.image || "" });
     setEditing(p.id);
     setEditingSlug(p.slug);
@@ -53,10 +57,11 @@ export default function AdminPages() {
   const handleSave = async () => {
     if (!form.title) { alert("נא למלא כותרת"); return; }
     setSaving(true);
+    const content = editingSlug === "contact" ? buildContactContent(contactFields) : form.content;
     try {
       await supabase.from("site_pages").update({
         title: form.title,
-        content: form.content,
+        content,
         image: form.image,
         updated_at: new Date().toISOString(),
       }).eq("id", editing);
@@ -70,11 +75,39 @@ export default function AdminPages() {
     }
   };
 
+  // Parse contact fields from content
+  const parseContactFields = (content: string) => {
+    const fields = { phone: "", whatsapp: "", email: "", address: "", hours: "" };
+    content.split("\n").forEach((line) => {
+      const [key, ...rest] = line.split(": ");
+      if (key && rest.length && key.trim() in fields) {
+        (fields as Record<string, string>)[key.trim()] = rest.join(": ").trim();
+      }
+    });
+    return fields;
+  };
+
+  const buildContactContent = (fields: Record<string, string>) => {
+    return `phone: ${fields.phone}\nwhatsapp: ${fields.whatsapp}\nemail: ${fields.email}\naddress: ${fields.address}\nhours: ${fields.hours}`;
+  };
+
+  const [contactFields, setContactFields] = useState({ phone: "", whatsapp: "", email: "", address: "", hours: "" });
+
+  const handleEditContact = (p: PageRow) => {
+    const fields = parseContactFields(p.content || "");
+    setContactFields(fields);
+    setForm({ title: p.title, content: p.content || "", image: p.image || "" });
+    setEditing(p.id);
+    setEditingSlug(p.slug);
+    setShowForm(true);
+  };
+
   const slugLabels: Record<string, string> = {
     about: "אודות",
     contact: "צור קשר",
     shipping: "מדיניות משלוחים",
     returns: "מדיניות החזרות",
+    "privacy-policy": "מדיניות פרטיות",
   };
 
   return (
@@ -99,15 +132,68 @@ export default function AdminPages() {
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-semibold text-primary mb-1">תוכן</label>
-            <textarea
-              value={form.content}
-              onChange={(e) => setForm({ ...form, content: e.target.value })}
-              rows={12}
-              className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink resize-y"
-            />
-          </div>
+          {editingSlug === "contact" ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-semibold text-primary mb-1">טלפון</label>
+                <input
+                  type="text"
+                  value={contactFields.phone}
+                  onChange={(e) => setContactFields({ ...contactFields, phone: e.target.value })}
+                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                  dir="ltr"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-primary mb-1">וואטסאפ</label>
+                <input
+                  type="text"
+                  value={contactFields.whatsapp}
+                  onChange={(e) => setContactFields({ ...contactFields, whatsapp: e.target.value })}
+                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                  dir="ltr"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-primary mb-1">אימייל</label>
+                <input
+                  type="email"
+                  value={contactFields.email}
+                  onChange={(e) => setContactFields({ ...contactFields, email: e.target.value })}
+                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                  dir="ltr"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-primary mb-1">כתובת</label>
+                <input
+                  type="text"
+                  value={contactFields.address}
+                  onChange={(e) => setContactFields({ ...contactFields, address: e.target.value })}
+                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-semibold text-primary mb-1">שעות פעילות</label>
+                <input
+                  type="text"
+                  value={contactFields.hours}
+                  onChange={(e) => setContactFields({ ...contactFields, hours: e.target.value })}
+                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                />
+              </div>
+            </div>
+          ) : (
+            <div>
+              <label className="block text-sm font-semibold text-primary mb-1">תוכן</label>
+              <textarea
+                value={form.content}
+                onChange={(e) => setForm({ ...form, content: e.target.value })}
+                rows={12}
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink resize-y"
+              />
+            </div>
+          )}
 
           {/* Image */}
           <div>
