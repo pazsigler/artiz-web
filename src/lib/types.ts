@@ -41,3 +41,36 @@ export interface HeroSlide {
   imageDesktop: string;
   imageMobile: string;
 }
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  excerpt: string;
+  image: string;
+  published: boolean;
+  authorId: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SitePage {
+  id: string;
+  slug: string;
+  title: string;
+  content: string;
+  image: string;
+  updatedAt: string;
+}
+
+export type UserRole = "customer" | "admin" | "editor";
+
+export interface UserProfile {
+  id: string;
+  full_name: string | null;
+  phone: string | null;
+  email: string;
+  role: UserRole;
+  created_at: string;
+}

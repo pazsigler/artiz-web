@@ -140,6 +140,13 @@ export default function Header() {
               >
                 כל המוצרים
               </Link>
+              <Link
+                href="/blog"
+                onClick={() => setMenuOpen(false)}
+                className="block px-6 py-3 text-primary hover:bg-sky/10 transition-colors font-bold"
+              >
+                בלוג
+              </Link>
             </nav>
           </div>
         </div>
