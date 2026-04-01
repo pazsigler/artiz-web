@@ -106,8 +106,8 @@ export default function AdminPages() {
     about: "אודות",
     contact: "צור קשר",
     shipping: "מדיניות משלוחים",
-    returns: "מדיניות החזרות",
     "privacy-policy": "מדיניות פרטיות",
+    accessibility: "הצהרת נגישות",
   };
 
   return (
