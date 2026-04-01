@@ -64,6 +64,20 @@ export interface SitePage {
   updatedAt: string;
 }
 
+export interface Coupon {
+  id: string;
+  code: string;
+  discountType: "percentage" | "fixed";
+  discountValue: number;
+  minOrder: number;
+  maxDiscount: number | null;
+  maxUses: number | null;
+  usedCount: number;
+  expiresAt: string | null;
+  active: boolean;
+  createdAt: string;
+}
+
 export type UserRole = "customer" | "admin" | "editor";
 
 export interface UserProfile {
