@@ -85,6 +85,28 @@ export async function getProductsByIds(ids: string[]): Promise<Product[]> {
   }));
 }
 
+export async function getNewProducts(limit = 4): Promise<Product[]> {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return data.map((p) => ({
+    id: p.id,
+    name: p.name,
+    price: p.price,
+    image: p.image || "",
+    gallery: p.gallery || [],
+    category: p.category_slug,
+    type: p.type,
+    description: p.description || "",
+    dimensions: p.dimensions || "",
+    shippingInfo: p.shipping_info || "",
+    fullDetails: p.full_details || "",
+  }));
+}
+
 export async function getHeroSlides(): Promise<HeroSlide[]> {
   const { data, error } = await supabase
     .from("hero_slides")

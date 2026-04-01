@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getCategories, getProducts, getHeroSlides } from "@/lib/supabase";
+import { getCategories, getProducts, getNewProducts, getHeroSlides } from "@/lib/supabase";
 import ProductCard from "@/components/ProductCard";
 import HeroSlider from "@/components/HeroSlider";
 import CategoryIcon from "@/components/CategoryIcon";
@@ -18,9 +18,10 @@ const circleColors = [
 export const revalidate = 60; // revalidate every 60 seconds
 
 export default async function Home() {
-  const [categories, products, heroSlides] = await Promise.all([
+  const [categories, products, newProducts, heroSlides] = await Promise.all([
     getCategories(),
     getProducts(),
+    getNewProducts(),
     getHeroSlides(),
   ]);
 
@@ -50,6 +51,20 @@ export default async function Home() {
                   {cat.name}
                 </h3>
               </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* New Products */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <h2 className="text-3xl font-bold text-primary text-center mb-10">
+            חדש באתר
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {newProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
         </div>
