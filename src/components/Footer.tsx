@@ -117,6 +117,16 @@ export default function Footer() {
             <h4 className="font-bold text-sm mb-4">מידע</h4>
             <ul className="space-y-2">
               <li>
+                <Link href="/about" className="text-white/50 hover:text-pink text-sm transition-colors">
+                  אודות
+                </Link>
+              </li>
+              <li>
+                <Link href="/blog" className="text-white/50 hover:text-pink text-sm transition-colors">
+                  בלוג
+                </Link>
+              </li>
+              <li>
                 <Link href="/contact" className="text-white/50 hover:text-pink text-sm transition-colors">
                   צרו קשר
                 </Link>
