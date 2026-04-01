@@ -63,7 +63,7 @@ export default async function Home() {
           <h2 className="text-3xl font-bold text-primary text-center mb-10">
             חדש באתר
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
             {newProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -77,7 +77,7 @@ export default async function Home() {
           <h2 className="text-3xl font-bold text-primary text-center mb-10">
             מוצרים פופולריים
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
             {popularProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
