@@ -171,27 +171,38 @@ export default function AdminPages() {
         </div>
       )}
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         {pages.map((p) => (
-          <div key={p.id} className="flex items-center gap-4 bg-white border border-primary/10 rounded-xl p-4">
-            <div className="w-10 h-10 rounded-full bg-sky/20 flex items-center justify-center flex-shrink-0">
-              <svg className="w-5 h-5 text-primary/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-              </svg>
+          <div key={p.id} className="bg-white border border-primary/10 rounded-xl p-5">
+            <div className="flex items-center gap-4 mb-3">
+              <div className="w-10 h-10 rounded-full bg-sky/20 flex items-center justify-center flex-shrink-0">
+                <svg className="w-5 h-5 text-primary/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                </svg>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="font-bold text-primary">{p.title}</div>
+                <div className="text-sm text-primary/40">/{p.slug}</div>
+              </div>
+              <div className="text-xs text-primary/30">
+                עודכן: {new Date(p.updated_at).toLocaleDateString("he-IL")}
+              </div>
+              <button
+                onClick={() => handleEdit(p)}
+                className="bg-primary/5 hover:bg-primary/10 text-primary px-5 py-2 rounded-full text-sm font-semibold transition-colors"
+              >
+                ערוך
+              </button>
             </div>
-            <div className="flex-1 min-w-0">
-              <div className="font-bold text-primary">{p.title}</div>
-              <div className="text-sm text-primary/40">/{p.slug}</div>
+            {/* Content preview */}
+            {p.image && (
+              <div className="relative w-full h-32 rounded-xl overflow-hidden border border-primary/5 mb-3">
+                <Image src={p.image} alt="" fill className="object-cover" />
+              </div>
+            )}
+            <div className="bg-sky/5 rounded-xl p-4 text-sm text-primary/60 whitespace-pre-wrap line-clamp-4 max-h-28 overflow-hidden">
+              {p.content || <span className="text-primary/30 italic">אין תוכן עדיין - לחץ ערוך כדי להוסיף</span>}
             </div>
-            <div className="text-xs text-primary/30">
-              עודכן: {new Date(p.updated_at).toLocaleDateString("he-IL")}
-            </div>
-            <button
-              onClick={() => handleEdit(p)}
-              className="text-primary/50 hover:text-primary text-sm font-semibold"
-            >
-              ערוך
-            </button>
           </div>
         ))}
         {pages.length === 0 && (
