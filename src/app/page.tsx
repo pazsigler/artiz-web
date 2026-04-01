@@ -75,7 +75,7 @@ export default async function Home() {
       <section className="py-16 bg-sky/5">
         <div className="max-w-7xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-primary text-center mb-10">
-            מוצרים פופולריים
+            הנמכרים ביותר
           </h2>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
             {popularProducts.map((product) => (
