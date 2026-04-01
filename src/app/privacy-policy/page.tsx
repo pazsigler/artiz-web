@@ -1,6 +1,6 @@
 import { getSitePageBySlug } from "@/lib/supabase";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function PrivacyPolicyPage() {
   const page = await getSitePageBySlug("privacy-policy");
