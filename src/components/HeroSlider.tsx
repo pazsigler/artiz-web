@@ -9,40 +9,37 @@ interface Props {
   slides: HeroSlide[];
 }
 
-// Rotating gradient themes for each slide
+// Base is always #384850, accent "lighting" changes per slide
+const BASE = "#384850";
 const themes = [
   {
-    gradient: "linear-gradient(135deg, #384850 0%, #2d3d44 30%, #1a2a30 60%, #384850 100%)",
-    accent: "bg-pink/20",
-    accent2: "bg-sky/15",
+    accent: "bg-pink/25",
+    accent2: "bg-pink/15",
     accent3: "bg-purple-soft/10",
     btnBg: "bg-pink hover:bg-pink/90",
     btnText: "text-white",
     dotActive: "bg-pink",
   },
   {
-    gradient: "linear-gradient(135deg, #1a2a30 0%, #2a3840 30%, #384850 60%, #1a2a30 100%)",
-    accent: "bg-sky/25",
-    accent2: "bg-teal/15",
-    accent3: "bg-green-soft/10",
+    accent: "bg-sky/30",
+    accent2: "bg-sky/18",
+    accent3: "bg-teal/10",
     btnBg: "bg-sky hover:bg-sky/90",
     btnText: "text-primary",
     dotActive: "bg-sky",
   },
   {
-    gradient: "linear-gradient(135deg, #2d3040 0%, #352d42 30%, #1e1a2a 60%, #2d3040 100%)",
-    accent: "bg-lavender/25",
-    accent2: "bg-purple-soft/15",
-    accent3: "bg-pink/10",
+    accent: "bg-lavender/30",
+    accent2: "bg-purple-soft/18",
+    accent3: "bg-lavender/10",
     btnBg: "bg-lavender hover:bg-lavender/90",
     btnText: "text-primary",
     dotActive: "bg-lavender",
   },
   {
-    gradient: "linear-gradient(135deg, #2a3530 0%, #1e2e28 30%, #1a2820 60%, #2a3530 100%)",
-    accent: "bg-green-soft/25",
-    accent2: "bg-teal/15",
-    accent3: "bg-yellow-soft/10",
+    accent: "bg-green-soft/30",
+    accent2: "bg-green-soft/18",
+    accent3: "bg-teal/10",
     btnBg: "bg-green-soft hover:bg-green-soft/90",
     btnText: "text-primary",
     dotActive: "bg-green-soft",
@@ -88,17 +85,17 @@ export default function HeroSlider({ slides }: Props) {
               }`}
               aria-hidden={!isActive}
             >
-              {/* Gradient background */}
+              {/* Solid base background */}
               <div
-                className="absolute inset-0 hero-gradient-animate"
-                style={{ backgroundImage: theme.gradient, backgroundSize: "200% 200%" }}
+                className="absolute inset-0"
+                style={{ backgroundColor: BASE }}
               />
 
-              {/* Animated background shapes */}
+              {/* Colored lighting over base */}
               <div className="absolute inset-0 overflow-hidden">
-                <div className={`absolute -top-20 -left-20 w-[400px] h-[400px] rounded-full ${theme.accent} blur-3xl hero-float`} />
-                <div className={`absolute bottom-[-60px] right-[20%] w-[300px] h-[300px] rounded-full ${theme.accent2} blur-2xl hero-float-delayed`} />
-                <div className={`absolute top-[30%] left-[40%] w-[200px] h-[200px] rounded-full ${theme.accent3} blur-2xl hero-float-slow`} />
+                <div className={`absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full ${theme.accent} blur-[100px] hero-float`} />
+                <div className={`absolute bottom-[-80px] right-[10%] w-[450px] h-[450px] rounded-full ${theme.accent2} blur-[80px] hero-float-delayed`} />
+                <div className={`absolute top-[20%] left-[35%] w-[350px] h-[350px] rounded-full ${theme.accent3} blur-[90px] hero-float-slow`} />
                 <div className="absolute inset-0 opacity-[0.03]" style={{
                   backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 60px, rgba(255,255,255,0.5) 60px, rgba(255,255,255,0.5) 61px)`,
                 }} />
