@@ -4,13 +4,16 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useWishlist } from "@/context/WishlistContext";
+import { useCart } from "@/context/CartContext";
 import { getProductsByIds } from "@/lib/supabase";
 import { Product } from "@/lib/types";
 
 export default function WishlistPage() {
   const { wishlist, toggleWishlist } = useWishlist();
+  const { addItem } = useCart();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [addedId, setAddedId] = useState<string | null>(null);
 
   useEffect(() => {
     if (wishlist.length === 0) {
@@ -87,6 +90,31 @@ export default function WishlistPage() {
                 </div>
               </div>
             </Link>
+            <div className="px-4 pb-4">
+              {product.type === "custom" ? (
+                <Link
+                  href={`/product/${product.id}`}
+                  className="block w-full text-center bg-pink text-white py-2.5 rounded-full font-semibold hover:bg-pink/90 transition-colors text-sm"
+                >
+                  התאמה אישית ורכישה
+                </Link>
+              ) : (
+                <button
+                  onClick={() => {
+                    addItem(product);
+                    setAddedId(product.id);
+                    setTimeout(() => setAddedId(null), 2000);
+                  }}
+                  className={`w-full py-2.5 rounded-full font-semibold transition-colors text-sm ${
+                    addedId === product.id
+                      ? "bg-green-soft text-white"
+                      : "bg-primary text-white hover:bg-primary/90"
+                  }`}
+                >
+                  {addedId === product.id ? "נוסף לסל ✓" : "הוסף לסל"}
+                </button>
+              )}
+            </div>
           </div>
         ))}
       </div>
