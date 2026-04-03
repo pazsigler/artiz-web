@@ -28,6 +28,11 @@ export default function ProductDetails({ product }: { product: Product }) {
   const { toggleWishlist, isInWishlist } = useWishlist();
   const router = useRouter();
   const inWishlist = isInWishlist(product.id);
+  // Custom fields: fall back to all fields for backward compatibility
+  const fields = product.customFields && product.customFields.length > 0
+    ? product.customFields
+    : ["dedication", "color", "font", "image"];
+  const hasCustomFields = product.type === "custom" && fields.length > 0;
   const [dedication, setDedication] = useState("");
   const [selectedColor, setSelectedColor] = useState(COLORS[0].value);
   const [selectedFont, setSelectedFont] = useState(FONTS[0].value);
@@ -183,7 +188,7 @@ export default function ProductDetails({ product }: { product: Product }) {
             )}
 
             {/* Custom dedication overlay */}
-            {product.type === "custom" && dedication && (
+            {hasCustomFields && fields.includes("dedication") && dedication && (
               <div className="absolute inset-0 flex items-center justify-center p-8 bg-black/20 z-10">
                 <p
                   className="text-2xl font-semibold break-words max-w-full text-center"
@@ -233,84 +238,92 @@ export default function ProductDetails({ product }: { product: Product }) {
           <p className="text-primary/60 text-lg mb-4">{product.description}</p>
           <p className="text-3xl font-bold text-primary mb-8">₪{product.price}</p>
 
-          {/* Customization Fields */}
-          {product.type === "custom" && (
+          {/* Customization Fields - show only enabled fields */}
+          {product.type === "custom" && hasCustomFields && (
             <div className="space-y-6 mb-8">
               {/* Dedication */}
-              <div>
-                <label className="block font-semibold text-primary mb-2">הקדשה</label>
-                <textarea
-                  value={dedication}
-                  onChange={(e) => setDedication(e.target.value)}
-                  placeholder="כתוב הקדשה אישית..."
-                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink resize-none h-24"
-                />
-              </div>
+              {fields.includes("dedication") && (
+                <div>
+                  <label className="block font-semibold text-primary mb-2">הקדשה</label>
+                  <textarea
+                    value={dedication}
+                    onChange={(e) => setDedication(e.target.value)}
+                    placeholder="כתוב הקדשה אישית..."
+                    className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink resize-none h-24"
+                  />
+                </div>
+              )}
 
               {/* Color Selection */}
-              <div>
-                <label className="block font-semibold text-primary mb-2">בחר צבע</label>
-                <div className="flex gap-3 flex-wrap">
-                  {COLORS.map((color) => (
-                    <button
-                      key={color.value}
-                      onClick={() => setSelectedColor(color.value)}
-                      className={`w-10 h-10 rounded-full border-2 transition-transform ${
-                        selectedColor === color.value
-                          ? "border-primary scale-110"
-                          : "border-transparent"
-                      }`}
-                      style={{ backgroundColor: color.value }}
-                      title={color.name}
-                    />
-                  ))}
+              {fields.includes("color") && (
+                <div>
+                  <label className="block font-semibold text-primary mb-2">בחר צבע</label>
+                  <div className="flex gap-3 flex-wrap">
+                    {COLORS.map((color) => (
+                      <button
+                        key={color.value}
+                        onClick={() => setSelectedColor(color.value)}
+                        className={`w-10 h-10 rounded-full border-2 transition-transform ${
+                          selectedColor === color.value
+                            ? "border-primary scale-110"
+                            : "border-transparent"
+                        }`}
+                        style={{ backgroundColor: color.value }}
+                        title={color.name}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Font Selection */}
-              <div>
-                <label className="block font-semibold text-primary mb-2">בחר פונט</label>
-                <div className="flex gap-3 flex-wrap">
-                  {FONTS.map((font) => (
-                    <button
-                      key={font.value}
-                      onClick={() => setSelectedFont(font.value)}
-                      className={`px-4 py-2 rounded-xl border-2 transition-colors ${
-                        selectedFont === font.value
-                          ? "border-primary bg-primary/5"
-                          : "border-primary/20"
-                      }`}
-                      style={{
-                        fontFamily: font.value === "Rubik-bold" ? "Rubik" : font.value,
-                        fontWeight: font.value === "Rubik-bold" ? 700 : 400,
-                      }}
-                    >
-                      {font.name}
-                    </button>
-                  ))}
+              {fields.includes("font") && (
+                <div>
+                  <label className="block font-semibold text-primary mb-2">בחר פונט</label>
+                  <div className="flex gap-3 flex-wrap">
+                    {FONTS.map((font) => (
+                      <button
+                        key={font.value}
+                        onClick={() => setSelectedFont(font.value)}
+                        className={`px-4 py-2 rounded-xl border-2 transition-colors ${
+                          selectedFont === font.value
+                            ? "border-primary bg-primary/5"
+                            : "border-primary/20"
+                        }`}
+                        style={{
+                          fontFamily: font.value === "Rubik-bold" ? "Rubik" : font.value,
+                          fontWeight: font.value === "Rubik-bold" ? 700 : 400,
+                        }}
+                      >
+                        {font.name}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* File Upload */}
-              <div>
-                <label className="block font-semibold text-primary mb-2">העלה קובץ</label>
-                <label className="flex items-center gap-3 border border-dashed border-primary/30 rounded-xl p-4 cursor-pointer hover:border-pink transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <span className="text-primary/50">
-                    {fileName || "לחץ לבחירת קובץ"}
-                  </span>
-                  <input
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={(e) =>
-                      setFileName(e.target.files?.[0]?.name || "")
-                    }
-                  />
-                </label>
-              </div>
+              {fields.includes("image") && (
+                <div>
+                  <label className="block font-semibold text-primary mb-2">העלה תמונה</label>
+                  <label className="flex items-center gap-3 border border-dashed border-primary/30 rounded-xl p-4 cursor-pointer hover:border-pink transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span className="text-primary/50">
+                      {fileName || "לחץ לבחירת קובץ"}
+                    </span>
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={(e) =>
+                        setFileName(e.target.files?.[0]?.name || "")
+                      }
+                    />
+                  </label>
+                </div>
+              )}
             </div>
           )}
 

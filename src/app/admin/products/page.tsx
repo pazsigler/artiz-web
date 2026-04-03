@@ -25,6 +25,13 @@ interface CategoryRow {
   name: string;
 }
 
+const CUSTOM_FIELD_OPTIONS = [
+  { key: "dedication", label: "כיתוב / הקדשה" },
+  { key: "color", label: "צבע מדבקה" },
+  { key: "font", label: "בחירת פונט" },
+  { key: "image", label: "העלאת תמונה" },
+] as const;
+
 const emptyForm = {
   name: "",
   price: 0,
@@ -36,6 +43,7 @@ const emptyForm = {
   dimensions: "",
   shipping_info: "",
   full_details: "",
+  custom_fields: [] as string[],
 };
 
 type SortKey = "created_at" | "name" | "category_slug";
@@ -135,6 +143,7 @@ export default function AdminProducts() {
       dimensions: p.dimensions || "",
       shipping_info: p.shipping_info || "",
       full_details: p.full_details || "",
+      custom_fields: (p as ProductRow & { custom_fields?: string[] }).custom_fields || [],
     });
     setEditing(p.id);
     setShowForm(true);
@@ -267,6 +276,32 @@ export default function AdminProducts() {
               </select>
             </div>
           </div>
+
+          {/* Custom fields selection - only shown when type is custom */}
+          {form.type === "custom" && (
+            <div className="bg-pink/5 rounded-xl p-4">
+              <p className="text-sm font-bold text-primary mb-3">שדות התאמה אישית</p>
+              <div className="flex flex-wrap gap-4">
+                {CUSTOM_FIELD_OPTIONS.map((opt) => (
+                  <label key={opt.key} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={form.custom_fields.includes(opt.key)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setForm({ ...form, custom_fields: [...form.custom_fields, opt.key] });
+                        } else {
+                          setForm({ ...form, custom_fields: form.custom_fields.filter((f) => f !== opt.key) });
+                        }
+                      }}
+                      className="w-4 h-4"
+                    />
+                    <span className="text-sm font-semibold text-primary">{opt.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-semibold text-primary mb-1">תיאור</label>

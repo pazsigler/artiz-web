@@ -1,5 +1,7 @@
 export type ProductType = "regular" | "custom";
 
+export type CustomFieldType = "dedication" | "color" | "font" | "image";
+
 export interface Product {
   id: string;
   name: string;
@@ -12,6 +14,7 @@ export interface Product {
   dimensions: string;
   shippingInfo: string;
   fullDetails: string;
+  customFields: CustomFieldType[];
 }
 
 export interface CartItem {
