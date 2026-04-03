@@ -131,7 +131,7 @@ export default function HeroSlider({ slides }: Props) {
                   </div>
 
                   {/* Product image - left side in RTL */}
-                  <div className={`flex-shrink-0 order-1 md:order-2 w-[180px] h-[180px] md:w-[340px] md:h-[380px] lg:w-[400px] lg:h-[440px] relative transition-all duration-1000 delay-100 ${
+                  <div className={`flex-shrink-0 order-1 md:order-2 w-[220px] h-[220px] md:w-[420px] md:h-[440px] lg:w-[500px] lg:h-[500px] relative transition-all duration-1000 delay-100 ${
                     isActive ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-75 translate-y-8"
                   }`}>
                     <div className={`absolute inset-4 md:inset-8 rounded-full ${theme.accent} blur-2xl hero-pulse`} />
@@ -143,7 +143,7 @@ export default function HeroSlider({ slides }: Props) {
                           fill
                           className="object-contain drop-shadow-2xl"
                           priority={i === 0}
-                          sizes="(max-width: 768px) 180px, (max-width: 1024px) 340px, 400px"
+                          sizes="(max-width: 768px) 220px, (max-width: 1024px) 420px, 500px"
                         />
                       </div>
                     ) : (
