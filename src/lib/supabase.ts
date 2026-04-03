@@ -38,7 +38,7 @@ export async function getProducts(): Promise<Product[]> {
     dimensions: p.dimensions || "",
     shippingInfo: p.shipping_info || "",
     fullDetails: p.full_details || "",
-    customFields: p.custom_fields || [],
+    customFields: p.custom_fields || {},
   }));
 }
 
@@ -61,7 +61,7 @@ export async function getProductById(id: string): Promise<Product | null> {
     dimensions: data.dimensions || "",
     shippingInfo: data.shipping_info || "",
     fullDetails: data.full_details || "",
-    customFields: data.custom_fields || [],
+    customFields: data.custom_fields || {},
   };
 }
 
@@ -84,7 +84,7 @@ export async function getProductsByIds(ids: string[]): Promise<Product[]> {
     dimensions: p.dimensions || "",
     shippingInfo: p.shipping_info || "",
     fullDetails: p.full_details || "",
-    customFields: p.custom_fields || [],
+    customFields: p.custom_fields || {},
   }));
 }
 
@@ -107,7 +107,7 @@ export async function getNewProducts(limit = 4): Promise<Product[]> {
     dimensions: p.dimensions || "",
     shippingInfo: p.shipping_info || "",
     fullDetails: p.full_details || "",
-    customFields: p.custom_fields || [],
+    customFields: p.custom_fields || {},
   }));
 }
 

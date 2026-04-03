@@ -1,6 +1,21 @@
 export type ProductType = "regular" | "custom";
 
-export type CustomFieldType = "dedication" | "color" | "font" | "image";
+export interface ColorOption {
+  name: string;
+  value: string;
+}
+
+export interface FontOption {
+  name: string;
+  value: string;
+}
+
+export interface CustomFieldsConfig {
+  dedication?: { maxLength: number };
+  color?: { colors: ColorOption[] };
+  font?: { fonts: FontOption[] };
+  image?: boolean;
+}
 
 export interface Product {
   id: string;
@@ -14,7 +29,7 @@ export interface Product {
   dimensions: string;
   shippingInfo: string;
   fullDetails: string;
-  customFields: CustomFieldType[];
+  customFields: CustomFieldsConfig;
 }
 
 export interface CartItem {

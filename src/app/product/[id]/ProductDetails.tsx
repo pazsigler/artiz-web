@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
-import { Product } from "@/lib/types";
+import { Product, CustomFieldsConfig } from "@/lib/types";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { useRouter } from "next/navigation";
@@ -28,11 +28,13 @@ export default function ProductDetails({ product }: { product: Product }) {
   const { toggleWishlist, isInWishlist } = useWishlist();
   const router = useRouter();
   const inWishlist = isInWishlist(product.id);
-  // Custom fields: fall back to all fields for backward compatibility
-  const fields = product.customFields && product.customFields.length > 0
+  // Custom fields config - fall back to all fields for backward compatibility
+  const cf: CustomFieldsConfig = product.customFields && Object.keys(product.customFields).length > 0
     ? product.customFields
-    : ["dedication", "color", "font", "image"];
-  const hasCustomFields = product.type === "custom" && fields.length > 0;
+    : (product.type === "custom" ? { dedication: { maxLength: 0 }, color: { colors: COLORS.map((c) => ({ name: c.name, value: c.value })) }, font: { fonts: FONTS.map((f) => ({ name: f.name, value: f.value })) }, image: true } : {});
+  const hasCustomFields = product.type === "custom" && Object.keys(cf).length > 0;
+  const cfColors = cf.color?.colors || COLORS;
+  const cfFonts = cf.font?.fonts || FONTS;
   const [dedication, setDedication] = useState("");
   const [selectedColor, setSelectedColor] = useState(COLORS[0].value);
   const [selectedFont, setSelectedFont] = useState(FONTS[0].value);
@@ -188,7 +190,7 @@ export default function ProductDetails({ product }: { product: Product }) {
             )}
 
             {/* Custom dedication overlay */}
-            {hasCustomFields && fields.includes("dedication") && dedication && (
+            {hasCustomFields && cf.dedication && dedication && (
               <div className="absolute inset-0 flex items-center justify-center p-8 bg-black/20 z-10">
                 <p
                   className="text-2xl font-semibold break-words max-w-full text-center"
@@ -239,27 +241,35 @@ export default function ProductDetails({ product }: { product: Product }) {
           <p className="text-3xl font-bold text-primary mb-8">₪{product.price}</p>
 
           {/* Customization Fields - show only enabled fields */}
-          {product.type === "custom" && hasCustomFields && (
+          {hasCustomFields && (
             <div className="space-y-6 mb-8">
               {/* Dedication */}
-              {fields.includes("dedication") && (
+              {cf.dedication && (
                 <div>
                   <label className="block font-semibold text-primary mb-2">הקדשה</label>
                   <textarea
                     value={dedication}
-                    onChange={(e) => setDedication(e.target.value)}
+                    onChange={(e) => {
+                      const max = cf.dedication!.maxLength;
+                      if (max > 0 && e.target.value.length > max) return;
+                      setDedication(e.target.value);
+                    }}
                     placeholder="כתוב הקדשה אישית..."
+                    maxLength={cf.dedication.maxLength > 0 ? cf.dedication.maxLength : undefined}
                     className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink resize-none h-24"
                   />
+                  {cf.dedication.maxLength > 0 && (
+                    <p className="text-xs text-primary/40 mt-1">{dedication.length}/{cf.dedication.maxLength} תווים</p>
+                  )}
                 </div>
               )}
 
               {/* Color Selection */}
-              {fields.includes("color") && (
+              {cf.color && (
                 <div>
                   <label className="block font-semibold text-primary mb-2">בחר צבע</label>
                   <div className="flex gap-3 flex-wrap">
-                    {COLORS.map((color) => (
+                    {cfColors.map((color) => (
                       <button
                         key={color.value}
                         onClick={() => setSelectedColor(color.value)}
@@ -277,11 +287,11 @@ export default function ProductDetails({ product }: { product: Product }) {
               )}
 
               {/* Font Selection */}
-              {fields.includes("font") && (
+              {cf.font && (
                 <div>
                   <label className="block font-semibold text-primary mb-2">בחר פונט</label>
                   <div className="flex gap-3 flex-wrap">
-                    {FONTS.map((font) => (
+                    {cfFonts.map((font) => (
                       <button
                         key={font.value}
                         onClick={() => setSelectedFont(font.value)}
@@ -303,7 +313,7 @@ export default function ProductDetails({ product }: { product: Product }) {
               )}
 
               {/* File Upload */}
-              {fields.includes("image") && (
+              {cf.image && (
                 <div>
                   <label className="block font-semibold text-primary mb-2">העלה תמונה</label>
                   <label className="flex items-center gap-3 border border-dashed border-primary/30 rounded-xl p-4 cursor-pointer hover:border-pink transition-colors">

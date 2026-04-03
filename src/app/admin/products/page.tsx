@@ -25,12 +25,28 @@ interface CategoryRow {
   name: string;
 }
 
-const CUSTOM_FIELD_OPTIONS = [
-  { key: "dedication", label: "כיתוב / הקדשה" },
-  { key: "color", label: "צבע מדבקה" },
-  { key: "font", label: "בחירת פונט" },
-  { key: "image", label: "העלאת תמונה" },
-] as const;
+const DEFAULT_COLORS = [
+  { name: "ורוד", value: "#f38eb3" },
+  { name: "תכלת", value: "#c7e9f2" },
+  { name: "סגול", value: "#cc90b7" },
+  { name: "ירוק", value: "#b1d9a3" },
+  { name: "כתום", value: "#fed194" },
+  { name: "צהוב", value: "#fee580" },
+  { name: "לבנדר", value: "#d1c4e0" },
+];
+
+const DEFAULT_FONTS = [
+  { name: "רגיל", value: "Rubik" },
+  { name: "דקורטיבי", value: "cursive" },
+  { name: "מודגש", value: "Rubik-bold" },
+];
+
+interface CustomFieldsConfig {
+  dedication?: { maxLength: number };
+  color?: { colors: { name: string; value: string }[] };
+  font?: { fonts: { name: string; value: string }[] };
+  image?: boolean;
+}
 
 const emptyForm = {
   name: "",
@@ -43,7 +59,7 @@ const emptyForm = {
   dimensions: "",
   shipping_info: "",
   full_details: "",
-  custom_fields: [] as string[],
+  custom_fields: {} as CustomFieldsConfig,
 };
 
 type SortKey = "created_at" | "name" | "category_slug";
@@ -143,7 +159,7 @@ export default function AdminProducts() {
       dimensions: p.dimensions || "",
       shipping_info: p.shipping_info || "",
       full_details: p.full_details || "",
-      custom_fields: (p as ProductRow & { custom_fields?: string[] }).custom_fields || [],
+      custom_fields: (p as ProductRow & { custom_fields?: CustomFieldsConfig }).custom_fields || {},
     });
     setEditing(p.id);
     setShowForm(true);
@@ -277,28 +293,204 @@ export default function AdminProducts() {
             </div>
           </div>
 
-          {/* Custom fields selection - only shown when type is custom */}
+          {/* Custom fields configuration - only shown when type is custom */}
           {form.type === "custom" && (
-            <div className="bg-pink/5 rounded-xl p-4">
-              <p className="text-sm font-bold text-primary mb-3">שדות התאמה אישית</p>
-              <div className="flex flex-wrap gap-4">
-                {CUSTOM_FIELD_OPTIONS.map((opt) => (
-                  <label key={opt.key} className="flex items-center gap-2 cursor-pointer">
+            <div className="bg-pink/5 rounded-xl p-4 space-y-4">
+              <p className="text-sm font-bold text-primary">שדות התאמה אישית</p>
+
+              {/* Dedication */}
+              <div className="border border-primary/10 rounded-xl p-3 bg-white">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={!!form.custom_fields.dedication}
+                    onChange={(e) => {
+                      const cf = { ...form.custom_fields };
+                      if (e.target.checked) cf.dedication = { maxLength: 0 };
+                      else delete cf.dedication;
+                      setForm({ ...form, custom_fields: cf });
+                    }}
+                    className="w-4 h-4"
+                  />
+                  <span className="text-sm font-bold text-primary">כיתוב / הקדשה</span>
+                </label>
+                {form.custom_fields.dedication && (
+                  <div className="mt-2 mr-6">
+                    <label className="text-xs text-primary/60">הגבלת תווים (0 = ללא הגבלה)</label>
                     <input
-                      type="checkbox"
-                      checked={form.custom_fields.includes(opt.key)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setForm({ ...form, custom_fields: [...form.custom_fields, opt.key] });
-                        } else {
-                          setForm({ ...form, custom_fields: form.custom_fields.filter((f) => f !== opt.key) });
-                        }
-                      }}
-                      className="w-4 h-4"
+                      type="number"
+                      min={0}
+                      value={form.custom_fields.dedication.maxLength}
+                      onChange={(e) => setForm({
+                        ...form,
+                        custom_fields: { ...form.custom_fields, dedication: { maxLength: Number(e.target.value) } },
+                      })}
+                      className="w-32 border border-primary/20 rounded-lg p-2 text-sm mt-1"
+                      dir="ltr"
                     />
-                    <span className="text-sm font-semibold text-primary">{opt.label}</span>
-                  </label>
-                ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Color */}
+              <div className="border border-primary/10 rounded-xl p-3 bg-white">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={!!form.custom_fields.color}
+                    onChange={(e) => {
+                      const cf = { ...form.custom_fields };
+                      if (e.target.checked) cf.color = { colors: [...DEFAULT_COLORS] };
+                      else delete cf.color;
+                      setForm({ ...form, custom_fields: cf });
+                    }}
+                    className="w-4 h-4"
+                  />
+                  <span className="text-sm font-bold text-primary">צבע מדבקה</span>
+                </label>
+                {form.custom_fields.color && (
+                  <div className="mt-3 mr-6 space-y-2">
+                    <div className="flex flex-wrap gap-2">
+                      {form.custom_fields.color.colors.map((c, i) => (
+                        <div key={i} className="flex items-center gap-1 bg-sky/10 rounded-full pl-2 pr-1 py-1">
+                          <span
+                            className="w-5 h-5 rounded-full border border-primary/20"
+                            style={{ backgroundColor: c.value }}
+                          />
+                          <span className="text-xs text-primary">{c.name}</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const colors = form.custom_fields.color!.colors.filter((_, j) => j !== i);
+                              setForm({ ...form, custom_fields: { ...form.custom_fields, color: { colors } } });
+                            }}
+                            className="text-red-400 hover:text-red-600 text-xs px-1"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="color"
+                        id="new-color-value"
+                        defaultValue="#f38eb3"
+                        className="w-8 h-8 rounded cursor-pointer border-0"
+                      />
+                      <input
+                        type="text"
+                        id="new-color-name"
+                        placeholder="שם הצבע"
+                        className="border border-primary/20 rounded-lg p-1.5 text-sm w-28"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const nameEl = document.getElementById("new-color-name") as HTMLInputElement;
+                          const valueEl = document.getElementById("new-color-value") as HTMLInputElement;
+                          if (!nameEl.value) return;
+                          const colors = [...form.custom_fields.color!.colors, { name: nameEl.value, value: valueEl.value }];
+                          setForm({ ...form, custom_fields: { ...form.custom_fields, color: { colors } } });
+                          nameEl.value = "";
+                        }}
+                        className="text-xs bg-primary text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-primary/90"
+                      >
+                        + הוסף
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Font */}
+              <div className="border border-primary/10 rounded-xl p-3 bg-white">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={!!form.custom_fields.font}
+                    onChange={(e) => {
+                      const cf = { ...form.custom_fields };
+                      if (e.target.checked) cf.font = { fonts: [...DEFAULT_FONTS] };
+                      else delete cf.font;
+                      setForm({ ...form, custom_fields: cf });
+                    }}
+                    className="w-4 h-4"
+                  />
+                  <span className="text-sm font-bold text-primary">בחירת פונט</span>
+                </label>
+                {form.custom_fields.font && (
+                  <div className="mt-3 mr-6 space-y-2">
+                    <div className="flex flex-wrap gap-2">
+                      {form.custom_fields.font.fonts.map((f, i) => (
+                        <div key={i} className="flex items-center gap-1 bg-sky/10 rounded-full pl-3 pr-1 py-1">
+                          <span className="text-xs text-primary" style={{
+                            fontFamily: f.value === "Rubik-bold" ? "Rubik" : f.value,
+                            fontWeight: f.value === "Rubik-bold" ? 700 : 400,
+                          }}>{f.name}</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const fonts = form.custom_fields.font!.fonts.filter((_, j) => j !== i);
+                              setForm({ ...form, custom_fields: { ...form.custom_fields, font: { fonts } } });
+                            }}
+                            className="text-red-400 hover:text-red-600 text-xs px-1"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        id="new-font-name"
+                        placeholder="שם הפונט"
+                        className="border border-primary/20 rounded-lg p-1.5 text-sm w-28"
+                      />
+                      <input
+                        type="text"
+                        id="new-font-value"
+                        placeholder="font-family"
+                        dir="ltr"
+                        className="border border-primary/20 rounded-lg p-1.5 text-sm w-32"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const nameEl = document.getElementById("new-font-name") as HTMLInputElement;
+                          const valueEl = document.getElementById("new-font-value") as HTMLInputElement;
+                          if (!nameEl.value || !valueEl.value) return;
+                          const fonts = [...form.custom_fields.font!.fonts, { name: nameEl.value, value: valueEl.value }];
+                          setForm({ ...form, custom_fields: { ...form.custom_fields, font: { fonts } } });
+                          nameEl.value = "";
+                          valueEl.value = "";
+                        }}
+                        className="text-xs bg-primary text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-primary/90"
+                      >
+                        + הוסף
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Image upload */}
+              <div className="border border-primary/10 rounded-xl p-3 bg-white">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={!!form.custom_fields.image}
+                    onChange={(e) => {
+                      const cf = { ...form.custom_fields };
+                      if (e.target.checked) cf.image = true;
+                      else delete cf.image;
+                      setForm({ ...form, custom_fields: cf });
+                    }}
+                    className="w-4 h-4"
+                  />
+                  <span className="text-sm font-bold text-primary">העלאת תמונה</span>
+                </label>
               </div>
             </div>
           )}
