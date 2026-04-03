@@ -157,6 +157,18 @@ body {
   50% { opacity: 0.7; transform: scale(1.08); }
 }
 
+@keyframes hero-gradient-shift {
+  0% { background-position: 0% 50%; }
+  25% { background-position: 100% 25%; }
+  50% { background-position: 100% 50%; }
+  75% { background-position: 0% 75%; }
+  100% { background-position: 0% 50%; }
+}
+
+.hero-gradient-animate {
+  animation: hero-gradient-shift 10s ease-in-out infinite;
+}
+
 .hero-float {
   animation: hero-float 12s ease-in-out infinite;
 }
