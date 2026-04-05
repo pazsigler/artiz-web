@@ -16,7 +16,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   return (
     <article className="py-16 bg-white min-h-[60vh]">
       <div className="max-w-3xl mx-auto px-4">
-        <Link href="/blog" className="text-pink hover:text-pink/80 text-sm font-semibold mb-8 inline-block">
+        <Link href="/blog" className="text-accent hover:text-accent/80 text-sm font-semibold mb-8 inline-block">
           &larr; חזרה לבלוג
         </Link>
 

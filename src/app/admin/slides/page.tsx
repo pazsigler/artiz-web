@@ -112,7 +112,7 @@ export default function AdminSlides() {
         <h2 className="text-xl font-bold text-primary">ניהול סליידים</h2>
         <button
           onClick={handleNew}
-          className="bg-pink text-white px-6 py-2 rounded-full font-semibold hover:bg-pink/90 transition-colors text-sm"
+          className="bg-accent text-white px-6 py-2 rounded-full font-semibold hover:bg-accent/90 transition-colors text-sm"
         >
           + סלייד חדש
         </button>
@@ -129,7 +129,7 @@ export default function AdminSlides() {
                 type="text"
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
               />
             </div>
             <div>
@@ -138,7 +138,7 @@ export default function AdminSlides() {
                 type="text"
                 value={form.subtitle}
                 onChange={(e) => setForm({ ...form, subtitle: e.target.value })}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
               />
             </div>
             <div>
@@ -147,7 +147,7 @@ export default function AdminSlides() {
                 type="text"
                 value={form.cta}
                 onChange={(e) => setForm({ ...form, cta: e.target.value })}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
               />
             </div>
             <div>
@@ -156,7 +156,7 @@ export default function AdminSlides() {
                 type="text"
                 value={form.href}
                 onChange={(e) => setForm({ ...form, href: e.target.value })}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
                 dir="ltr"
               />
             </div>
@@ -191,7 +191,7 @@ export default function AdminSlides() {
                 <button
                   onClick={() => imageRef.current?.click()}
                   disabled={uploading}
-                  className="flex-1 h-48 border-2 border-dashed border-primary/20 rounded-xl flex flex-col items-center justify-center gap-2 text-primary/40 hover:border-pink hover:text-pink transition-colors"
+                  className="flex-1 h-48 border-2 border-dashed border-primary/20 rounded-xl flex flex-col items-center justify-center gap-2 text-primary/40 hover:border-accent hover:text-accent transition-colors"
                 >
                   {uploading ? (
                     <span className="text-sm">מעלה...</span>
@@ -207,7 +207,7 @@ export default function AdminSlides() {
                 </button>
                 <button
                   onClick={() => setMediaPicker(true)}
-                  className="flex-1 h-48 border-2 border-dashed border-primary/20 rounded-xl flex flex-col items-center justify-center gap-2 text-primary/40 hover:border-pink hover:text-pink transition-colors"
+                  className="flex-1 h-48 border-2 border-dashed border-primary/20 rounded-xl flex flex-col items-center justify-center gap-2 text-primary/40 hover:border-accent hover:text-accent transition-colors"
                 >
                   <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -231,7 +231,7 @@ export default function AdminSlides() {
                 type="number"
                 value={form.sort_order}
                 onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
                 dir="ltr"
               />
             </div>
@@ -279,7 +279,7 @@ export default function AdminSlides() {
               <div className="font-bold text-primary truncate">{s.title}</div>
               <div className="text-sm text-primary/50">{s.subtitle}</div>
             </div>
-            <span className={`text-xs px-3 py-1 rounded-full font-semibold ${s.active ? "bg-green/30 text-green-700" : "bg-gray-100 text-gray-400"}`}>
+            <span className={`text-xs px-3 py-1 rounded-full font-semibold ${s.active ? "bg-success/30 text-green-700" : "bg-gray-100 text-gray-400"}`}>
               {s.active ? "פעיל" : "לא פעיל"}
             </span>
             <div className="flex gap-2">

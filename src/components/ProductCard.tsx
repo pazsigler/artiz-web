@@ -60,8 +60,8 @@ export default function ProductCard({ product }: { product: Product }) {
             onClick={handleAddToCart}
             className={`absolute bottom-3 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 shadow-lg ${
               added
-                ? "bg-green text-primary translate-y-0 opacity-100"
-                : "bg-white text-primary translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 hover:bg-pink hover:text-white"
+                ? "bg-success text-primary translate-y-0 opacity-100"
+                : "bg-white text-primary translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 hover:bg-accent hover:text-white"
             }`}
             aria-label={`הוסף ${product.name} לסל`}
           >
@@ -71,7 +71,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
         {/* Custom badge on image */}
         {product.type === "custom" && (
-          <span className="absolute bottom-3 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full text-xs font-semibold bg-pink/90 text-white shadow-lg translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+          <span className="absolute bottom-3 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full text-xs font-semibold bg-accent/90 text-white shadow-lg translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
             בהתאמה אישית
           </span>
         )}
@@ -81,8 +81,8 @@ export default function ProductCard({ product }: { product: Product }) {
           onClick={handleWishlist}
           className={`absolute top-3 left-3 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm ${
             isWished
-              ? "bg-pink text-white scale-100 opacity-100"
-              : "bg-white/80 text-primary/40 scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 hover:text-pink"
+              ? "bg-accent text-white scale-100 opacity-100"
+              : "bg-white/80 text-primary/40 scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 hover:text-accent"
           }`}
           aria-label={isWished ? `הסר ${product.name} מהמועדפים` : `הוסף ${product.name} למועדפים`}
         >
@@ -94,7 +94,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
       {/* Info */}
       <div className="p-4">
-        <h3 className="font-semibold text-primary group-hover:text-pink transition-colors duration-300 line-clamp-1">
+        <h3 className="font-semibold text-primary group-hover:text-accent transition-colors duration-300 line-clamp-1">
           {product.name}
         </h3>
         {product.description && (

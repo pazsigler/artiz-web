@@ -122,7 +122,7 @@ export default function MediaPicker({ open, onClose, onSelect, folder }: Props) 
             placeholder="חיפוש..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 min-w-[150px] border border-primary/15 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-pink"
+            className="flex-1 min-w-[150px] border border-primary/15 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-accent"
           />
           <input
             ref={inputRef}
@@ -137,7 +137,7 @@ export default function MediaPicker({ open, onClose, onSelect, folder }: Props) 
           <button
             onClick={() => inputRef.current?.click()}
             disabled={uploading}
-            className="bg-pink text-white px-4 py-1.5 rounded-full text-xs font-semibold hover:bg-pink/90 transition-colors disabled:opacity-50"
+            className="bg-accent text-white px-4 py-1.5 rounded-full text-xs font-semibold hover:bg-accent/90 transition-colors disabled:opacity-50"
           >
             {uploading ? "מעלה..." : "העלאה"}
           </button>
@@ -159,7 +159,7 @@ export default function MediaPicker({ open, onClose, onSelect, folder }: Props) 
                   onClick={() => setSelected(file.url === selected ? null : file.url)}
                   className={`group relative aspect-square rounded-xl overflow-hidden border-2 transition-all ${
                     selected === file.url
-                      ? "border-pink shadow-lg shadow-pink/20 ring-2 ring-pink/30"
+                      ? "border-accent shadow-lg shadow-accent/20 ring-2 ring-accent/30"
                       : "border-primary/10 hover:border-primary/25"
                   }`}
                 >
@@ -171,7 +171,7 @@ export default function MediaPicker({ open, onClose, onSelect, folder }: Props) 
                     sizes="(max-width: 640px) 33vw, 16vw"
                   />
                   {selected === file.url && (
-                    <div className="absolute top-1.5 left-1.5 w-5 h-5 rounded-full bg-pink flex items-center justify-center">
+                    <div className="absolute top-1.5 left-1.5 w-5 h-5 rounded-full bg-accent flex items-center justify-center">
                       <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                       </svg>

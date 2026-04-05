@@ -128,7 +128,7 @@ export default function AdminPages() {
               type="text"
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+              className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
             />
           </div>
 
@@ -140,7 +140,7 @@ export default function AdminPages() {
                   type="text"
                   value={contactFields.phone}
                   onChange={(e) => setContactFields({ ...contactFields, phone: e.target.value })}
-                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
                   dir="ltr"
                 />
               </div>
@@ -150,7 +150,7 @@ export default function AdminPages() {
                   type="text"
                   value={contactFields.whatsapp}
                   onChange={(e) => setContactFields({ ...contactFields, whatsapp: e.target.value })}
-                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
                   dir="ltr"
                 />
               </div>
@@ -160,7 +160,7 @@ export default function AdminPages() {
                   type="email"
                   value={contactFields.email}
                   onChange={(e) => setContactFields({ ...contactFields, email: e.target.value })}
-                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
                   dir="ltr"
                 />
               </div>
@@ -170,7 +170,7 @@ export default function AdminPages() {
                   type="text"
                   value={contactFields.address}
                   onChange={(e) => setContactFields({ ...contactFields, address: e.target.value })}
-                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
                 />
               </div>
               <div className="md:col-span-2">
@@ -179,7 +179,7 @@ export default function AdminPages() {
                   type="text"
                   value={contactFields.hours}
                   onChange={(e) => setContactFields({ ...contactFields, hours: e.target.value })}
-                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
                 />
               </div>
             </div>
@@ -190,7 +190,7 @@ export default function AdminPages() {
                 value={form.content}
                 onChange={(e) => setForm({ ...form, content: e.target.value })}
                 rows={12}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink resize-y"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent resize-y"
               />
             </div>
           )}
@@ -223,7 +223,7 @@ export default function AdminPages() {
               <button
                 onClick={() => fileRef.current?.click()}
                 disabled={uploading}
-                className="w-full h-32 border-2 border-dashed border-primary/20 rounded-xl flex flex-col items-center justify-center gap-2 text-primary/40 hover:border-pink hover:text-pink transition-colors"
+                className="w-full h-32 border-2 border-dashed border-primary/20 rounded-xl flex flex-col items-center justify-center gap-2 text-primary/40 hover:border-accent hover:text-accent transition-colors"
               >
                 {uploading ? (
                   <span className="text-sm">מעלה...</span>

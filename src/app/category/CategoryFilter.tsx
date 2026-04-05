@@ -62,8 +62,8 @@ export default function CategoryFilter({ categories, products }: Props) {
             aria-pressed={selectedType === "all"}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
               selectedType === "all"
-                ? "bg-pink text-white"
-                : "bg-pink/5 text-pink hover:bg-pink/10"
+                ? "bg-accent text-white"
+                : "bg-accent/5 text-accent hover:bg-accent/10"
             }`}
           >
             הכל
@@ -73,8 +73,8 @@ export default function CategoryFilter({ categories, products }: Props) {
             aria-pressed={selectedType === "regular"}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
               selectedType === "regular"
-                ? "bg-pink text-white"
-                : "bg-pink/5 text-pink hover:bg-pink/10"
+                ? "bg-accent text-white"
+                : "bg-accent/5 text-accent hover:bg-accent/10"
             }`}
           >
             רגיל
@@ -84,8 +84,8 @@ export default function CategoryFilter({ categories, products }: Props) {
             aria-pressed={selectedType === "custom"}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
               selectedType === "custom"
-                ? "bg-pink text-white"
-                : "bg-pink/5 text-pink hover:bg-pink/10"
+                ? "bg-accent text-white"
+                : "bg-accent/5 text-accent hover:bg-accent/10"
             }`}
           >
             בהתאמה אישית

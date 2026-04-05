@@ -113,7 +113,7 @@ export default function AdminBlog() {
         <h2 className="text-xl font-bold text-primary">ניהול בלוג</h2>
         <button
           onClick={() => { setForm(emptyPost); setEditing(null); setShowForm(true); }}
-          className="bg-pink text-white px-6 py-2 rounded-full font-semibold hover:bg-pink/90 transition-colors text-sm"
+          className="bg-accent text-white px-6 py-2 rounded-full font-semibold hover:bg-accent/90 transition-colors text-sm"
         >
           + מאמר חדש
         </button>
@@ -130,7 +130,7 @@ export default function AdminBlog() {
                 type="text"
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
               />
             </div>
             <div>
@@ -139,7 +139,7 @@ export default function AdminBlog() {
                 type="text"
                 value={form.slug}
                 onChange={(e) => setForm({ ...form, slug: e.target.value })}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
                 dir="ltr"
               />
             </div>
@@ -151,7 +151,7 @@ export default function AdminBlog() {
               type="text"
               value={form.excerpt}
               onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
-              className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+              className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
             />
           </div>
 
@@ -161,7 +161,7 @@ export default function AdminBlog() {
               value={form.content}
               onChange={(e) => setForm({ ...form, content: e.target.value })}
               rows={10}
-              className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink resize-y"
+              className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent resize-y"
             />
           </div>
 
@@ -193,7 +193,7 @@ export default function AdminBlog() {
               <button
                 onClick={() => fileRef.current?.click()}
                 disabled={uploading}
-                className="w-full h-32 border-2 border-dashed border-primary/20 rounded-xl flex flex-col items-center justify-center gap-2 text-primary/40 hover:border-pink hover:text-pink transition-colors"
+                className="w-full h-32 border-2 border-dashed border-primary/20 rounded-xl flex flex-col items-center justify-center gap-2 text-primary/40 hover:border-accent hover:text-accent transition-colors"
               >
                 {uploading ? (
                   <span className="text-sm">מעלה...</span>
@@ -258,7 +258,7 @@ export default function AdminBlog() {
             <button
               onClick={() => handleTogglePublish(p)}
               className={`text-xs px-3 py-1 rounded-full font-semibold cursor-pointer transition-colors ${
-                p.published ? "bg-green/30 text-green-700 hover:bg-green/50" : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+                p.published ? "bg-success/30 text-green-700 hover:bg-success/50" : "bg-gray-100 text-gray-400 hover:bg-gray-200"
               }`}
             >
               {p.published ? "פורסם" : "טיוטה"}

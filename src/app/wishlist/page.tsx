@@ -62,7 +62,7 @@ export default function WishlistPage() {
               className="absolute top-3 left-3 z-10 w-9 h-9 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-sm transition-colors"
               aria-label={`הסר ${product.name} מהמועדפים`}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-pink" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-accent" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
               </svg>
             </button>
@@ -76,14 +76,14 @@ export default function WishlistPage() {
                 )}
               </div>
               <div className="p-4">
-                <h3 className="font-semibold text-primary group-hover:text-pink transition-colors">
+                <h3 className="font-semibold text-primary group-hover:text-accent transition-colors">
                   {product.name}
                 </h3>
                 <p className="text-sm text-primary/60 mt-1">{product.description}</p>
                 <div className="flex items-center justify-between mt-3">
                   <span className="text-lg font-bold text-primary">₪{product.price}</span>
                   {product.type === "custom" && (
-                    <span className="text-xs bg-pink/10 text-pink px-2 py-1 rounded-full">
+                    <span className="text-xs bg-accent/10 text-accent px-2 py-1 rounded-full">
                       בהתאמה אישית
                     </span>
                   )}
@@ -94,7 +94,7 @@ export default function WishlistPage() {
               {product.type === "custom" ? (
                 <Link
                   href={`/product/${product.id}`}
-                  className="block w-full text-center bg-pink text-white py-2.5 rounded-full font-semibold hover:bg-pink/90 transition-colors text-sm"
+                  className="block w-full text-center bg-accent text-white py-2.5 rounded-full font-semibold hover:bg-accent/90 transition-colors text-sm"
                 >
                   התאמה אישית ורכישה
                 </Link>
@@ -107,7 +107,7 @@ export default function WishlistPage() {
                   }}
                   className={`w-full py-2.5 rounded-full font-semibold transition-colors text-sm ${
                     addedId === product.id
-                      ? "bg-green text-white"
+                      ? "bg-success text-white"
                       : "bg-primary text-white hover:bg-primary/90"
                   }`}
                 >

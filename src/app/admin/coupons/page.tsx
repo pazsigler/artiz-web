@@ -120,7 +120,7 @@ export default function AdminCoupons() {
         <h2 className="text-xl font-bold text-primary">ניהול קופונים</h2>
         <button
           onClick={() => { setForm(emptyForm); setEditing(null); setShowForm(true); }}
-          className="bg-pink text-white px-6 py-2 rounded-full font-semibold hover:bg-pink/90 transition-colors text-sm"
+          className="bg-accent text-white px-6 py-2 rounded-full font-semibold hover:bg-accent/90 transition-colors text-sm"
         >
           + קופון חדש
         </button>
@@ -138,7 +138,7 @@ export default function AdminCoupons() {
                 value={form.code}
                 onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
                 placeholder="לדוגמה: SAVE20"
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink uppercase"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent uppercase"
                 dir="ltr"
               />
             </div>
@@ -147,7 +147,7 @@ export default function AdminCoupons() {
               <select
                 value={form.discount_type}
                 onChange={(e) => setForm({ ...form, discount_type: e.target.value as "percentage" | "fixed" })}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink bg-white"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent bg-white"
               >
                 <option value="percentage">אחוזים (%)</option>
                 <option value="fixed">סכום קבוע (₪)</option>
@@ -162,7 +162,7 @@ export default function AdminCoupons() {
                 value={form.discount_value}
                 onChange={(e) => setForm({ ...form, discount_value: Number(e.target.value) })}
                 min={0}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
                 dir="ltr"
               />
             </div>
@@ -172,7 +172,7 @@ export default function AdminCoupons() {
                 type="date"
                 value={form.expires_at}
                 onChange={(e) => setForm({ ...form, expires_at: e.target.value })}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
                 dir="ltr"
               />
             </div>
@@ -183,7 +183,7 @@ export default function AdminCoupons() {
                 value={form.min_order}
                 onChange={(e) => setForm({ ...form, min_order: Number(e.target.value) })}
                 min={0}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
                 dir="ltr"
               />
             </div>
@@ -195,7 +195,7 @@ export default function AdminCoupons() {
                 onChange={(e) => setForm({ ...form, max_discount: e.target.value })}
                 placeholder="ללא הגבלה"
                 min={0}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
                 dir="ltr"
               />
             </div>
@@ -207,7 +207,7 @@ export default function AdminCoupons() {
                 onChange={(e) => setForm({ ...form, max_uses: e.target.value })}
                 placeholder="ללא הגבלה"
                 min={0}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
                 dir="ltr"
               />
             </div>
@@ -244,8 +244,8 @@ export default function AdminCoupons() {
       <div className="space-y-3">
         {coupons.map((c) => (
           <div key={c.id} className="flex items-center gap-4 bg-white border border-primary/10 rounded-xl p-4">
-            <div className="w-12 h-12 rounded-xl bg-pink/10 flex items-center justify-center flex-shrink-0">
-              <span className="text-pink font-bold text-sm">{formatDiscount(c)}</span>
+            <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
+              <span className="text-accent font-bold text-sm">{formatDiscount(c)}</span>
             </div>
             <div className="flex-1 min-w-0">
               <div className="font-bold text-primary font-mono text-lg tracking-wider" dir="ltr">{c.code}</div>
@@ -276,7 +276,7 @@ export default function AdminCoupons() {
               onClick={() => handleToggleActive(c)}
               className={`text-xs px-3 py-1 rounded-full font-semibold cursor-pointer transition-colors ${
                 c.active && !isExpired(c) && !isUsedUp(c)
-                  ? "bg-green/30 text-green-700 hover:bg-green/50"
+                  ? "bg-success/30 text-green-700 hover:bg-success/50"
                   : "bg-gray-100 text-gray-400 hover:bg-gray-200"
               }`}
             >

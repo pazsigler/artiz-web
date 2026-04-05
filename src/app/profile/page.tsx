@@ -69,7 +69,7 @@ export default function ProfilePage() {
             type="text"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+            className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
           />
         </div>
 
@@ -79,7 +79,7 @@ export default function ProfilePage() {
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+            className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
             placeholder="050-0000000"
           />
         </div>
@@ -96,7 +96,7 @@ export default function ProfilePage() {
       {isAdmin && (
         <Link
           href="/admin"
-          className="block text-center mt-6 bg-pink text-white py-3 rounded-full font-semibold hover:bg-pink/90 transition-colors"
+          className="block text-center mt-6 bg-accent text-white py-3 rounded-full font-semibold hover:bg-accent/90 transition-colors"
         >
           פאנל ניהול
         </Link>

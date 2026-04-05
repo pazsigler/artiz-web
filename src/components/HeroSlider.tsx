@@ -13,17 +13,17 @@ interface Props {
 const BASE = "#384850";
 const themes = [
   {
-    accent: "bg-pink/25",
-    accent2: "bg-pink/15",
+    accent: "bg-accent/25",
+    accent2: "bg-accent/15",
     accent3: "bg-lavender/10",
-    btnBg: "bg-pink hover:bg-pink/90",
+    btnBg: "bg-accent hover:bg-accent/90",
     btnText: "text-white",
-    dotActive: "bg-pink",
+    dotActive: "bg-accent",
   },
   {
     accent: "bg-sky/35",
     accent2: "bg-sky/20",
-    accent3: "bg-green/10",
+    accent3: "bg-success/10",
     btnBg: "bg-sky hover:bg-sky/90",
     btnText: "text-primary",
     dotActive: "bg-sky",
@@ -31,7 +31,7 @@ const themes = [
   {
     accent: "bg-lavender/30",
     accent2: "bg-lavender/18",
-    accent3: "bg-pink/10",
+    accent3: "bg-accent/10",
     btnBg: "bg-lavender hover:bg-lavender/90",
     btnText: "text-primary",
     dotActive: "bg-lavender",
@@ -39,7 +39,7 @@ const themes = [
   {
     accent: "bg-warm/30",
     accent2: "bg-warm/18",
-    accent3: "bg-green/10",
+    accent3: "bg-success/10",
     btnBg: "bg-warm hover:bg-warm/90",
     btnText: "text-primary",
     dotActive: "bg-warm",

@@ -205,7 +205,7 @@ export default function AdminProducts() {
         <h2 className="text-xl font-bold text-primary">ניהול מוצרים</h2>
         <button
           onClick={handleNew}
-          className="bg-pink text-white px-6 py-2 rounded-full font-semibold hover:bg-pink/90 transition-colors text-sm"
+          className="bg-accent text-white px-6 py-2 rounded-full font-semibold hover:bg-accent/90 transition-colors text-sm"
         >
           + מוצר חדש
         </button>
@@ -219,7 +219,7 @@ export default function AdminProducts() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="חיפוש מוצר..."
-            className="w-full border border-primary/20 rounded-xl p-2.5 text-sm focus:outline-none focus:border-pink"
+            className="w-full border border-primary/20 rounded-xl p-2.5 text-sm focus:outline-none focus:border-accent"
           />
         </div>
         <div className="flex gap-2">
@@ -254,7 +254,7 @@ export default function AdminProducts() {
                 type="text"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
               />
             </div>
             <div>
@@ -263,7 +263,7 @@ export default function AdminProducts() {
                 type="number"
                 value={form.price}
                 onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
                 dir="ltr"
               />
             </div>
@@ -272,7 +272,7 @@ export default function AdminProducts() {
               <select
                 value={form.category_slug}
                 onChange={(e) => setForm({ ...form, category_slug: e.target.value })}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
               >
                 <option value="">בחר קטגוריה</option>
                 {categories.map((c) => (
@@ -285,7 +285,7 @@ export default function AdminProducts() {
               <select
                 value={form.type}
                 onChange={(e) => setForm({ ...form, type: e.target.value })}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
               >
                 <option value="regular">רגיל</option>
                 <option value="custom">בהתאמה אישית</option>
@@ -295,7 +295,7 @@ export default function AdminProducts() {
 
           {/* Custom fields configuration - only shown when type is custom */}
           {form.type === "custom" && (
-            <div className="bg-pink/5 rounded-xl p-4 space-y-4">
+            <div className="bg-accent/5 rounded-xl p-4 space-y-4">
               <p className="text-sm font-bold text-primary">שדות התאמה אישית</p>
 
               {/* Dedication */}
@@ -500,7 +500,7 @@ export default function AdminProducts() {
             <textarea
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
-              className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink resize-none h-20"
+              className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent resize-none h-20"
             />
           </div>
 
@@ -540,7 +540,7 @@ export default function AdminProducts() {
                 </div>
               ))}
             </div>
-            <label className="inline-flex items-center gap-2 border border-dashed border-primary/30 rounded-xl px-4 py-2 cursor-pointer hover:border-pink transition-colors text-sm text-primary/60">
+            <label className="inline-flex items-center gap-2 border border-dashed border-primary/30 rounded-xl px-4 py-2 cursor-pointer hover:border-accent transition-colors text-sm text-primary/60">
               {uploadingGallery ? "מעלה..." : "+ הוסף תמונות לגלריה"}
               <input
                 type="file"
@@ -563,7 +563,7 @@ export default function AdminProducts() {
                 <textarea
                   value={form.dimensions}
                   onChange={(e) => setForm({ ...form, dimensions: e.target.value })}
-                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink resize-none h-16 text-sm"
+                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent resize-none h-16 text-sm"
                   placeholder="לדוגמה: 30x20 ס״מ, משקל 500 גרם"
                 />
               </div>
@@ -572,7 +572,7 @@ export default function AdminProducts() {
                 <textarea
                   value={form.shipping_info}
                   onChange={(e) => setForm({ ...form, shipping_info: e.target.value })}
-                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink resize-none h-16 text-sm"
+                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent resize-none h-16 text-sm"
                   placeholder="לדוגמה: משלוח תוך 3-5 ימי עסקים, החזרה עד 14 יום"
                 />
               </div>
@@ -581,7 +581,7 @@ export default function AdminProducts() {
                 <textarea
                   value={form.full_details}
                   onChange={(e) => setForm({ ...form, full_details: e.target.value })}
-                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink resize-none h-24 text-sm"
+                  className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent resize-none h-24 text-sm"
                   placeholder="תיאור מפורט של המוצר, חומרים, הוראות טיפול..."
                 />
               </div>

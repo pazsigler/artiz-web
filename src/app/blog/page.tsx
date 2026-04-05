@@ -41,7 +41,7 @@ export default async function BlogPage() {
                       day: "numeric",
                     })}
                   </time>
-                  <h2 className="text-lg font-bold text-primary mt-1 mb-2 group-hover:text-pink transition-colors">
+                  <h2 className="text-lg font-bold text-primary mt-1 mb-2 group-hover:text-accent transition-colors">
                     {post.title}
                   </h2>
                   {post.excerpt && (

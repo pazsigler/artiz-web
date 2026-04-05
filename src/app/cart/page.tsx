@@ -73,7 +73,7 @@ export default function CartPage() {
                   <div>
                     <Link
                       href={`/product/${item.product.id}`}
-                      className="font-semibold text-primary hover:text-pink transition-colors"
+                      className="font-semibold text-primary hover:text-accent transition-colors"
                     >
                       {item.product.name}
                     </Link>
@@ -94,7 +94,7 @@ export default function CartPage() {
                 {item.customization && (
                   <div className="mt-2 flex flex-wrap gap-2">
                     {item.customization.dedication && (
-                      <span className="inline-flex items-center gap-1 text-xs bg-pink/8 text-pink px-2.5 py-1 rounded-full">
+                      <span className="inline-flex items-center gap-1 text-xs bg-accent/8 text-accent px-2.5 py-1 rounded-full">
                         הקדשה: {item.customization.dedication}
                       </span>
                     )}
@@ -176,7 +176,7 @@ export default function CartPage() {
 
             <Link
               href="/checkout"
-              className="block w-full bg-pink text-white text-center py-4 rounded-full text-lg font-semibold hover:bg-pink/90 transition-all duration-300 hover:shadow-lg hover:shadow-pink/20"
+              className="block w-full bg-accent text-white text-center py-4 rounded-full text-lg font-semibold hover:bg-accent/90 transition-all duration-300 hover:shadow-lg hover:shadow-accent/20"
             >
               המשך לתשלום
             </Link>

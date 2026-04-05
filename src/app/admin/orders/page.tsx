@@ -27,7 +27,7 @@ const statusColors: Record<string, string> = {
   pending: "bg-warm/40 text-yellow-700",
   confirmed: "bg-sky/30 text-blue-700",
   shipped: "bg-lavender/30 text-purple-700",
-  delivered: "bg-green/30 text-green-700",
+  delivered: "bg-success/30 text-green-700",
   cancelled: "bg-red-100 text-red-600",
 };
 
@@ -141,7 +141,7 @@ export default function AdminOrders() {
                     <select
                       value={order.status}
                       onChange={(e) => updateStatus(order.id, e.target.value)}
-                      className="border border-primary/20 rounded-xl p-2 text-sm focus:outline-none focus:border-pink"
+                      className="border border-primary/20 rounded-xl p-2 text-sm focus:outline-none focus:border-accent"
                     >
                       {Object.entries(statusLabels).map(([key, label]) => (
                         <option key={key} value={key}>{label}</option>
@@ -154,7 +154,7 @@ export default function AdminOrders() {
                       type="text"
                       value={order.notes || ""}
                       onChange={(e) => updateNotes(order.id, e.target.value)}
-                      className="w-full border border-primary/20 rounded-xl p-2 text-sm focus:outline-none focus:border-pink"
+                      className="w-full border border-primary/20 rounded-xl p-2 text-sm focus:outline-none focus:border-accent"
                       placeholder="הוסף הערה..."
                     />
                   </div>

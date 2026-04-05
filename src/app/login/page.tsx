@@ -52,7 +52,7 @@ export default function LoginPage() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+            className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
             placeholder="email@example.com"
             dir="ltr"
           />
@@ -65,7 +65,7 @@ export default function LoginPage() {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+            className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
             placeholder="••••••••"
             dir="ltr"
           />
@@ -82,7 +82,7 @@ export default function LoginPage() {
 
       <p className="text-center mt-6 text-primary/60">
         אין לך חשבון?{" "}
-        <Link href="/signup" className="text-pink font-semibold hover:underline">
+        <Link href="/signup" className="text-accent font-semibold hover:underline">
           הרשמה
         </Link>
       </p>

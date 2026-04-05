@@ -39,7 +39,7 @@ export default function SignupPage() {
   if (success) {
     return (
       <div className="max-w-md mx-auto px-4 py-16 text-center">
-        <div className="bg-green/20 rounded-2xl p-8">
+        <div className="bg-success/20 rounded-2xl p-8">
           <h1 className="text-2xl font-bold text-primary mb-4">נרשמת בהצלחה!</h1>
           <p className="text-primary/70 mb-6">
             שלחנו לך מייל אימות. לחץ על הלינק במייל כדי להפעיל את החשבון.
@@ -73,7 +73,7 @@ export default function SignupPage() {
             required
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+            className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
             placeholder="הכנס שם מלא"
           />
         </div>
@@ -85,7 +85,7 @@ export default function SignupPage() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+            className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
             placeholder="email@example.com"
             dir="ltr"
           />
@@ -99,7 +99,7 @@ export default function SignupPage() {
             minLength={6}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+            className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
             placeholder="לפחות 6 תווים"
             dir="ltr"
           />
@@ -116,7 +116,7 @@ export default function SignupPage() {
 
       <p className="text-center mt-6 text-primary/60">
         כבר יש לך חשבון?{" "}
-        <Link href="/login" className="text-pink font-semibold hover:underline">
+        <Link href="/login" className="text-accent font-semibold hover:underline">
           התחברות
         </Link>
       </p>

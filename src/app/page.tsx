@@ -6,12 +6,12 @@ import CategoryIcon from "@/components/CategoryIcon";
 import BulkOrderForm from "@/components/BulkOrderForm";
 
 const circleColors = [
-  "bg-pink/15 group-hover:bg-pink/25",
+  "bg-accent/15 group-hover:bg-accent/25",
   "bg-sky/25 group-hover:bg-sky/35",
   "bg-lavender/15 group-hover:bg-lavender/25",
-  "bg-green/15 group-hover:bg-green/25",
+  "bg-success/15 group-hover:bg-success/25",
   "bg-warm/15 group-hover:bg-warm/25",
-  "bg-pink/10 group-hover:bg-pink/20",
+  "bg-accent/10 group-hover:bg-accent/20",
   "bg-sky/20 group-hover:bg-sky/30",
   "bg-lavender/10 group-hover:bg-lavender/20",
 ];
@@ -26,9 +26,9 @@ function SectionHeading({ title, subtitle, light = false }: { title: string; sub
         <p className={`text-base ${light ? "text-white/60" : "text-primary/50"} mb-4`}>{subtitle}</p>
       )}
       <div className="flex items-center justify-center gap-2">
-        <span className="h-[2px] w-8 bg-pink/40 rounded-full" />
-        <span className="h-[2px] w-16 bg-pink rounded-full" />
-        <span className="h-[2px] w-8 bg-pink/40 rounded-full" />
+        <span className="h-[2px] w-8 bg-accent/40 rounded-full" />
+        <span className="h-[2px] w-16 bg-accent rounded-full" />
+        <span className="h-[2px] w-8 bg-accent/40 rounded-full" />
       </div>
     </div>
   );
@@ -54,7 +54,7 @@ export default async function Home() {
       {/* Categories */}
       <section className="py-16 bg-white relative overflow-hidden">
         {/* Decorative blobs */}
-        <div className="absolute -top-20 -right-20 w-64 h-64 bg-pink/5 rounded-full blur-3xl" />
+        <div className="absolute -top-20 -right-20 w-64 h-64 bg-accent/5 rounded-full blur-3xl" />
         <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-sky/5 rounded-full blur-3xl" />
 
         <div className="max-w-7xl mx-auto px-4 relative">
@@ -70,7 +70,7 @@ export default async function Home() {
                 >
                   <CategoryIcon slug={cat.slug} className="w-8 h-8 md:w-10 md:h-10 transition-transform duration-300 group-hover:scale-110" />
                 </div>
-                <h3 className="font-semibold text-primary text-sm group-hover:text-pink transition-colors duration-300">
+                <h3 className="font-semibold text-primary text-sm group-hover:text-accent transition-colors duration-300">
                   {cat.name}
                 </h3>
               </Link>
@@ -98,7 +98,7 @@ export default async function Home() {
 
       {/* Popular Products */}
       <section className="py-16 bg-gradient-to-b from-sky/5 to-lavender/5 relative overflow-hidden">
-        <div className="absolute top-10 left-0 w-48 h-48 bg-pink/5 rounded-full blur-3xl" />
+        <div className="absolute top-10 left-0 w-48 h-48 bg-accent/5 rounded-full blur-3xl" />
         <div className="absolute bottom-10 right-0 w-48 h-48 bg-lavender/5 rounded-full blur-3xl" />
 
         <div className="max-w-7xl mx-auto px-4 relative">

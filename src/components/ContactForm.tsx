@@ -31,12 +31,12 @@ export default function ContactForm() {
 
   if (sent) {
     return (
-      <div className="bg-green/20 rounded-2xl p-8 text-center">
+      <div className="bg-success/20 rounded-2xl p-8 text-center">
         <h3 className="text-xl font-bold text-primary mb-2">הפנייה נשלחה בהצלחה!</h3>
         <p className="text-primary/60">נחזור אליכם בהקדם.</p>
         <button
           onClick={() => setSent(false)}
-          className="mt-4 text-pink font-semibold hover:text-pink/80 transition-colors text-sm"
+          className="mt-4 text-accent font-semibold hover:text-accent/80 transition-colors text-sm"
         >
           שליחת פנייה נוספת
         </button>
@@ -50,26 +50,26 @@ export default function ContactForm() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-semibold text-primary mb-1">
-            שם <span className="text-pink">*</span>
+            שם <span className="text-accent">*</span>
           </label>
           <input
             type="text"
             required
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+            className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
           />
         </div>
         <div>
           <label className="block text-sm font-semibold text-primary mb-1">
-            טלפון <span className="text-pink">*</span>
+            טלפון <span className="text-accent">*</span>
           </label>
           <input
             type="tel"
             required
             value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+            className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
             dir="ltr"
           />
         </div>
@@ -80,7 +80,7 @@ export default function ContactForm() {
           type="email"
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
-          className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+          className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
           dir="ltr"
         />
       </div>
@@ -90,7 +90,7 @@ export default function ContactForm() {
           value={form.message}
           onChange={(e) => setForm({ ...form, message: e.target.value })}
           rows={4}
-          className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink resize-y"
+          className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent resize-y"
         />
       </div>
       <button

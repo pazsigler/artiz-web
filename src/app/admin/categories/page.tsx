@@ -83,7 +83,7 @@ export default function AdminCategories() {
         <h2 className="text-xl font-bold text-primary">ניהול קטגוריות</h2>
         <button
           onClick={handleNew}
-          className="bg-pink text-white px-6 py-2 rounded-full font-semibold hover:bg-pink/90 transition-colors text-sm"
+          className="bg-accent text-white px-6 py-2 rounded-full font-semibold hover:bg-accent/90 transition-colors text-sm"
         >
           + קטגוריה חדשה
         </button>
@@ -102,7 +102,7 @@ export default function AdminCategories() {
                   setName(e.target.value);
                   if (!editing) setSlug(generateSlug(e.target.value));
                 }}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
               />
             </div>
             <div>
@@ -111,7 +111,7 @@ export default function AdminCategories() {
                 type="text"
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
                 dir="ltr"
               />
             </div>

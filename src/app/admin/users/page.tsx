@@ -20,7 +20,7 @@ const roleLabels: Record<UserRole, string> = {
 };
 
 const roleColors: Record<UserRole, string> = {
-  admin: "bg-pink/20 text-pink",
+  admin: "bg-accent/20 text-accent",
   editor: "bg-lavender/20 text-purple-700",
   customer: "bg-sky/20 text-primary",
 };
@@ -92,7 +92,7 @@ export default function AdminUsers() {
         <h2 className="text-xl font-bold text-primary">ניהול משתמשים</h2>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-pink text-white px-6 py-2 rounded-full font-semibold hover:bg-pink/90 transition-colors text-sm"
+          className="bg-accent text-white px-6 py-2 rounded-full font-semibold hover:bg-accent/90 transition-colors text-sm"
         >
           + משתמש חדש
         </button>
@@ -108,7 +108,7 @@ export default function AdminUsers() {
                 type="email"
                 value={newUser.email}
                 onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
                 dir="ltr"
               />
             </div>
@@ -118,7 +118,7 @@ export default function AdminUsers() {
                 type="password"
                 value={newUser.password}
                 onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
                 dir="ltr"
               />
             </div>
@@ -128,7 +128,7 @@ export default function AdminUsers() {
                 type="text"
                 value={newUser.fullName}
                 onChange={(e) => setNewUser({ ...newUser, fullName: e.target.value })}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent"
               />
             </div>
             <div>
@@ -136,7 +136,7 @@ export default function AdminUsers() {
               <select
                 value={newUser.role}
                 onChange={(e) => setNewUser({ ...newUser, role: e.target.value as UserRole })}
-                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink bg-white"
+                className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent bg-white"
               >
                 <option value="customer">לקוח</option>
                 <option value="editor">עורך</option>

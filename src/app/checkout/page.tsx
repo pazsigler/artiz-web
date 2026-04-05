@@ -71,7 +71,7 @@ export default function CheckoutPage() {
               <div
                 className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-colors ${
                   i <= 1
-                    ? "bg-pink text-white"
+                    ? "bg-accent text-white"
                     : "bg-primary/5 text-primary/30"
                 }`}
               >
@@ -84,7 +84,7 @@ export default function CheckoutPage() {
               </span>
             </div>
             {i < steps.length - 1 && (
-              <div className={`w-12 md:w-24 h-[2px] mx-2 mb-5 ${i < 1 ? "bg-pink" : "bg-primary/10"}`} />
+              <div className={`w-12 md:w-24 h-[2px] mx-2 mb-5 ${i < 1 ? "bg-accent" : "bg-primary/10"}`} />
             )}
           </div>
         ))}
@@ -104,7 +104,7 @@ export default function CheckoutPage() {
                 required
                 value={form.fullName}
                 onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-                className="w-full border border-primary/15 rounded-xl p-3.5 focus:outline-none focus:border-pink focus:ring-2 focus:ring-pink/10 transition-all"
+                className="w-full border border-primary/15 rounded-xl p-3.5 focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/10 transition-all"
                 placeholder="הכנס שם מלא"
               />
             </div>
@@ -117,7 +117,7 @@ export default function CheckoutPage() {
                 required
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                className="w-full border border-primary/15 rounded-xl p-3.5 focus:outline-none focus:border-pink focus:ring-2 focus:ring-pink/10 transition-all"
+                className="w-full border border-primary/15 rounded-xl p-3.5 focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/10 transition-all"
                 placeholder="050-0000000"
                 dir="ltr"
               />
@@ -130,7 +130,7 @@ export default function CheckoutPage() {
                 required
                 value={form.address}
                 onChange={(e) => setForm({ ...form, address: e.target.value })}
-                className="w-full border border-primary/15 rounded-xl p-3.5 focus:outline-none focus:border-pink focus:ring-2 focus:ring-pink/10 transition-all resize-none h-28"
+                className="w-full border border-primary/15 rounded-xl p-3.5 focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/10 transition-all resize-none h-28"
                 placeholder="רחוב, מספר בית, עיר, מיקוד"
               />
             </div>
@@ -150,7 +150,7 @@ export default function CheckoutPage() {
                 <span className="text-xs text-primary/50 font-medium">משלוח לכל הארץ</span>
               </div>
               <div className="flex flex-col items-center text-center gap-2 py-3">
-                <svg className="w-6 h-6 text-pink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <svg className="w-6 h-6 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
                 </svg>
                 <span className="text-xs text-primary/50 font-medium">מיוצר באהבה</span>
@@ -160,7 +160,7 @@ export default function CheckoutPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-pink text-white py-4 rounded-full text-lg font-semibold hover:bg-pink/90 transition-all duration-300 disabled:opacity-50 hover:shadow-lg hover:shadow-pink/20"
+              className="w-full bg-accent text-white py-4 rounded-full text-lg font-semibold hover:bg-accent/90 transition-all duration-300 disabled:opacity-50 hover:shadow-lg hover:shadow-accent/20"
             >
               {loading ? "שולח הזמנה..." : "אישור הזמנה"}
             </button>

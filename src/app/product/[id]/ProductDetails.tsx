@@ -215,7 +215,7 @@ export default function ProductDetails({ product }: { product: Product }) {
                   onClick={() => goToImage(i)}
                   className={`relative w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 border-2 transition-all duration-200 ${
                     i === activeIndex
-                      ? "border-pink scale-105 shadow-md"
+                      ? "border-accent scale-105 shadow-md"
                       : "border-transparent opacity-60 hover:opacity-100"
                   }`}
                 >
@@ -231,7 +231,7 @@ export default function ProductDetails({ product }: { product: Product }) {
           <div className="flex items-start justify-between mb-2">
             <h1 className="text-3xl font-bold text-primary">{product.name}</h1>
             {product.type === "custom" && (
-              <span className="bg-pink/10 text-pink text-sm px-3 py-1 rounded-full">
+              <span className="bg-accent/10 text-accent text-sm px-3 py-1 rounded-full">
                 בהתאמה אישית
               </span>
             )}
@@ -256,7 +256,7 @@ export default function ProductDetails({ product }: { product: Product }) {
                     }}
                     placeholder="כתוב הקדשה אישית..."
                     maxLength={cf.dedication.maxLength > 0 ? cf.dedication.maxLength : undefined}
-                    className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-pink resize-none h-24"
+                    className="w-full border border-primary/20 rounded-xl p-3 focus:outline-none focus:border-accent resize-none h-24"
                   />
                   {cf.dedication.maxLength > 0 && (
                     <p className="text-xs text-primary/40 mt-1">{dedication.length}/{cf.dedication.maxLength} תווים</p>
@@ -316,7 +316,7 @@ export default function ProductDetails({ product }: { product: Product }) {
               {cf.image && (
                 <div>
                   <label className="block font-semibold text-primary mb-2">העלה תמונה</label>
-                  <label className="flex items-center gap-3 border border-dashed border-primary/30 rounded-xl p-4 cursor-pointer hover:border-pink transition-colors">
+                  <label className="flex items-center gap-3 border border-dashed border-primary/30 rounded-xl p-4 cursor-pointer hover:border-accent transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
@@ -345,7 +345,7 @@ export default function ProductDetails({ product }: { product: Product }) {
                   <h3>
                     <button
                       onClick={() => toggleAccordion(item.key)}
-                      className="w-full flex items-center justify-between py-4 text-primary font-semibold hover:text-pink transition-colors"
+                      className="w-full flex items-center justify-between py-4 text-primary font-semibold hover:text-accent transition-colors"
                       aria-expanded={openAccordion === item.key}
                       aria-controls={`accordion-${item.key}`}
                     >
@@ -386,7 +386,7 @@ export default function ProductDetails({ product }: { product: Product }) {
               onClick={handleAdd}
               className={`flex-1 py-3 rounded-full font-semibold transition-colors ${
                 added
-                  ? "bg-green text-white"
+                  ? "bg-success text-white"
                   : "bg-primary text-white hover:bg-primary/90"
               }`}
             >
@@ -395,7 +395,7 @@ export default function ProductDetails({ product }: { product: Product }) {
 
             <button
               onClick={handleQuickBuy}
-              className="flex-1 py-3 rounded-full font-semibold border-2 border-pink text-pink hover:bg-pink hover:text-white transition-colors"
+              className="flex-1 py-3 rounded-full font-semibold border-2 border-accent text-accent hover:bg-accent hover:text-white transition-colors"
             >
               רכישה מהירה
             </button>
@@ -405,15 +405,15 @@ export default function ProductDetails({ product }: { product: Product }) {
               onClick={() => toggleWishlist(product.id)}
               className={`w-12 h-12 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
                 inWishlist
-                  ? "border-pink bg-pink/10"
-                  : "border-primary/20 hover:border-pink"
+                  ? "border-accent bg-accent/10"
+                  : "border-primary/20 hover:border-accent"
               }`}
               aria-label={inWishlist ? "הסר מהמועדפים" : "הוסף למועדפים"}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className={`w-5 h-5 transition-colors duration-300 ${
-                  inWishlist ? "text-pink" : "text-primary/40"
+                  inWishlist ? "text-accent" : "text-primary/40"
                 }`}
                 fill={inWishlist ? "currentColor" : "none"}
                 viewBox="0 0 24 24"

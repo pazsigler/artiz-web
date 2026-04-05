@@ -101,7 +101,7 @@ export default function AdminMedia() {
           <button
             onClick={() => inputRef.current?.click()}
             disabled={uploading}
-            className="bg-pink text-white px-6 py-2 rounded-full font-semibold hover:bg-pink/90 transition-colors text-sm disabled:opacity-50"
+            className="bg-accent text-white px-6 py-2 rounded-full font-semibold hover:bg-accent/90 transition-colors text-sm disabled:opacity-50"
           >
             {uploading ? "מעלה..." : "+ העלאת קבצים"}
           </button>
@@ -142,7 +142,7 @@ export default function AdminMedia() {
             placeholder="חיפוש לפי שם קובץ..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full border border-primary/15 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-pink"
+            className="w-full border border-primary/15 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-accent"
           />
         </div>
 
@@ -171,11 +171,11 @@ export default function AdminMedia() {
 
       {/* Drop zone */}
       <div
-        onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add("border-pink", "bg-pink/5"); }}
-        onDragLeave={(e) => { e.currentTarget.classList.remove("border-pink", "bg-pink/5"); }}
+        onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add("border-accent", "bg-accent/5"); }}
+        onDragLeave={(e) => { e.currentTarget.classList.remove("border-accent", "bg-accent/5"); }}
         onDrop={(e) => {
           e.preventDefault();
-          e.currentTarget.classList.remove("border-pink", "bg-pink/5");
+          e.currentTarget.classList.remove("border-accent", "bg-accent/5");
           if (e.dataTransfer.files.length) handleUpload(e.dataTransfer.files);
         }}
         className="border-2 border-dashed border-primary/15 rounded-2xl p-4 mb-6 text-center text-primary/30 text-sm transition-colors"
@@ -201,7 +201,7 @@ export default function AdminMedia() {
                     onClick={() => setSelected(file.url === selected ? null : file.url)}
                     className={`group relative aspect-square rounded-xl overflow-hidden border-2 transition-all ${
                       selected === file.url
-                        ? "border-pink shadow-lg shadow-pink/20"
+                        ? "border-accent shadow-lg shadow-accent/20"
                         : "border-primary/10 hover:border-primary/30"
                     }`}
                   >
@@ -216,7 +216,7 @@ export default function AdminMedia() {
                       <p className="text-white text-xs truncate">{file.name}</p>
                     </div>
                     {selected === file.url && (
-                      <div className="absolute top-2 left-2 w-6 h-6 rounded-full bg-pink flex items-center justify-center">
+                      <div className="absolute top-2 left-2 w-6 h-6 rounded-full bg-accent flex items-center justify-center">
                         <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                         </svg>
@@ -233,7 +233,7 @@ export default function AdminMedia() {
                     onClick={() => setSelected(file.url === selected ? null : file.url)}
                     className={`w-full flex items-center gap-4 p-3 rounded-xl border transition-all text-right ${
                       selected === file.url
-                        ? "border-pink bg-pink/5"
+                        ? "border-accent bg-accent/5"
                         : "border-primary/10 hover:border-primary/20 hover:bg-primary/3"
                     }`}
                   >
