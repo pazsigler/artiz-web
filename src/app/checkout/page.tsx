@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
@@ -14,6 +14,101 @@ const steps = [
   { label: "אישור הזמנה", icon: "M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
 ];
 
+const INPUT_CLASS = "w-full border border-primary/15 rounded-xl p-3.5 focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/10 transition-all text-sm";
+
+// Israeli cities autocomplete using data.gov.il API
+function useCityAutocomplete() {
+  const [cities, setCities] = useState<string[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    if (loaded) return;
+    fetch(
+      'https://data.gov.il/api/3/action/datastore_search?resource_id=5c78e9fa-c2e2-4571-b4d8-571e2f1ae6e4&limit=2000&fields=שם_ישוב'
+    )
+      .then((r) => r.json())
+      .then((data) => {
+        const names: string[] = data.result.records
+          .map((r: Record<string, string>) => r["שם_ישוב"]?.trim())
+          .filter(Boolean)
+          .sort((a: string, b: string) => a.localeCompare(b, "he"));
+        setCities(names);
+        setLoaded(true);
+      })
+      .catch(() => {
+        // Fallback: allow free text
+        setLoaded(true);
+      });
+  }, [loaded]);
+
+  return cities;
+}
+
+function CityInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const cities = useCityAutocomplete();
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  const handleChange = useCallback(
+    (v: string) => {
+      onChange(v);
+      if (v.trim().length > 0 && cities.length > 0) {
+        const q = v.trim();
+        const matches = cities.filter((c) => c.includes(q)).slice(0, 8);
+        setSuggestions(matches);
+        setOpen(matches.length > 0);
+      } else {
+        setSuggestions([]);
+        setOpen(false);
+      }
+    },
+    [cities, onChange]
+  );
+
+  // Close on click outside
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <div className="relative" ref={ref}>
+      <input
+        type="text"
+        required
+        value={value}
+        onChange={(e) => handleChange(e.target.value)}
+        onFocus={() => { if (suggestions.length > 0) setOpen(true); }}
+        className={INPUT_CLASS}
+        placeholder="הקלד שם עיר..."
+        autoComplete="off"
+      />
+      {open && suggestions.length > 0 && (
+        <ul className="absolute z-50 top-full mt-1 w-full bg-white border border-primary/10 rounded-xl shadow-lg max-h-48 overflow-y-auto">
+          {suggestions.map((city) => (
+            <li key={city}>
+              <button
+                type="button"
+                className="w-full text-right px-4 py-2.5 text-sm hover:bg-sky/10 transition-colors"
+                onClick={() => {
+                  onChange(city);
+                  setOpen(false);
+                }}
+              >
+                {city}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
   const { user } = useAuth();
@@ -22,7 +117,18 @@ export default function CheckoutPage() {
   const [form, setForm] = useState({
     fullName: "",
     phone: "",
+    city: "",
+    street: "",
+    building: "",
+    apartment: "",
+    floor: "",
+  });
+  const [showInvoice, setShowInvoice] = useState(false);
+  const [invoice, setInvoice] = useState({
+    name: "",
+    phone: "",
     address: "",
+    businessNumber: "",
   });
 
   useEffect(() => {
@@ -33,6 +139,13 @@ export default function CheckoutPage() {
 
   if (items.length === 0) return null;
 
+  const buildAddress = () => {
+    let addr = `${form.street}${form.building ? ` ${form.building}` : ""}, ${form.city}`;
+    if (form.apartment) addr += `, דירה ${form.apartment}`;
+    if (form.floor) addr += `, קומה ${form.floor}`;
+    return addr;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -40,7 +153,7 @@ export default function CheckoutPage() {
       await createOrder({
         fullName: form.fullName,
         phone: form.phone,
-        address: form.address,
+        address: buildAddress(),
         total: totalPrice,
         userId: user?.id,
         items: items.map((item) => ({
@@ -60,6 +173,9 @@ export default function CheckoutPage() {
       setLoading(false);
     }
   };
+
+  const updateForm = (field: string, value: string) => setForm((prev) => ({ ...prev, [field]: value }));
+  const updateInvoice = (field: string, value: string) => setInvoice((prev) => ({ ...prev, [field]: value }));
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-12">
@@ -96,49 +212,197 @@ export default function CheckoutPage() {
           <h1 className="text-2xl font-bold text-primary mb-6">פרטי משלוח</h1>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label htmlFor="fullName" className="block font-semibold text-primary mb-2 text-sm">שם מלא</label>
-              <input
-                id="fullName"
-                type="text"
-                required
-                value={form.fullName}
-                onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-                className="w-full border border-primary/15 rounded-xl p-3.5 focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/10 transition-all"
-                placeholder="הכנס שם מלא"
-              />
+            {/* Name & Phone */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="fullName" className="block font-semibold text-primary mb-2 text-sm">שם מלא</label>
+                <input
+                  id="fullName"
+                  type="text"
+                  required
+                  value={form.fullName}
+                  onChange={(e) => updateForm("fullName", e.target.value)}
+                  className={INPUT_CLASS}
+                  placeholder="הכנס שם מלא"
+                />
+              </div>
+              <div>
+                <label htmlFor="phone" className="block font-semibold text-primary mb-2 text-sm">טלפון</label>
+                <input
+                  id="phone"
+                  type="tel"
+                  required
+                  value={form.phone}
+                  onChange={(e) => updateForm("phone", e.target.value)}
+                  className={INPUT_CLASS}
+                  placeholder="050-0000000"
+                  dir="ltr"
+                />
+              </div>
             </div>
 
-            <div>
-              <label htmlFor="phone" className="block font-semibold text-primary mb-2 text-sm">טלפון</label>
-              <input
-                id="phone"
-                type="tel"
-                required
-                value={form.phone}
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                className="w-full border border-primary/15 rounded-xl p-3.5 focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/10 transition-all"
-                placeholder="050-0000000"
-                dir="ltr"
-              />
+            {/* Address section */}
+            <div className="border border-primary/10 rounded-2xl p-4 md:p-5 space-y-4">
+              <h2 className="font-bold text-primary text-sm flex items-center gap-2">
+                <svg className="w-4 h-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0zM19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                </svg>
+                כתובת משלוח
+              </h2>
+
+              {/* City & Street - required */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="city" className="block font-semibold text-primary mb-2 text-sm">
+                    עיר <span className="text-accent">*</span>
+                  </label>
+                  <CityInput value={form.city} onChange={(v) => updateForm("city", v)} />
+                </div>
+                <div>
+                  <label htmlFor="street" className="block font-semibold text-primary mb-2 text-sm">
+                    רחוב ומספר <span className="text-accent">*</span>
+                  </label>
+                  <input
+                    id="street"
+                    type="text"
+                    required
+                    value={form.street}
+                    onChange={(e) => updateForm("street", e.target.value)}
+                    className={INPUT_CLASS}
+                    placeholder="לדוגמה: הרצל 10"
+                  />
+                </div>
+              </div>
+
+              {/* Building, Apartment, Floor - optional */}
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label htmlFor="building" className="block font-semibold text-primary mb-2 text-sm">בניין</label>
+                  <input
+                    id="building"
+                    type="text"
+                    value={form.building}
+                    onChange={(e) => updateForm("building", e.target.value)}
+                    className={INPUT_CLASS}
+                    placeholder="בניין"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="apartment" className="block font-semibold text-primary mb-2 text-sm">דירה</label>
+                  <input
+                    id="apartment"
+                    type="text"
+                    value={form.apartment}
+                    onChange={(e) => updateForm("apartment", e.target.value)}
+                    className={INPUT_CLASS}
+                    placeholder="דירה"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="floor" className="block font-semibold text-primary mb-2 text-sm">קומה</label>
+                  <input
+                    id="floor"
+                    type="text"
+                    value={form.floor}
+                    onChange={(e) => updateForm("floor", e.target.value)}
+                    className={INPUT_CLASS}
+                    placeholder="קומה"
+                  />
+                </div>
+              </div>
             </div>
 
-            <div>
-              <label htmlFor="address" className="block font-semibold text-primary mb-2 text-sm">כתובת משלוח</label>
-              <textarea
-                id="address"
-                required
-                value={form.address}
-                onChange={(e) => setForm({ ...form, address: e.target.value })}
-                className="w-full border border-primary/15 rounded-xl p-3.5 focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/10 transition-all resize-none h-28"
-                placeholder="רחוב, מספר בית, עיר, מיקוד"
-              />
+            {/* Invoice details toggle */}
+            <div className="border border-primary/10 rounded-2xl overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setShowInvoice(!showInvoice)}
+                className="w-full flex items-center justify-between p-4 md:p-5 hover:bg-sky/5 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${showInvoice ? "bg-accent border-accent" : "border-primary/20"}`}>
+                    {showInvoice && (
+                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                      </svg>
+                    )}
+                  </div>
+                  <span className="font-semibold text-primary text-sm">פרטים שונים עבור חשבונית</span>
+                </div>
+                <svg className={`w-4 h-4 text-primary/30 transition-transform duration-300 ${showInvoice ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                </svg>
+              </button>
+
+              <div className={`overflow-hidden transition-all duration-300 ease-in-out ${showInvoice ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
+                <div className="px-4 md:px-5 pb-4 md:pb-5 space-y-4 border-t border-primary/5 pt-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="invoiceName" className="block font-semibold text-primary mb-2 text-sm">
+                        שם לחשבונית <span className="text-accent">*</span>
+                      </label>
+                      <input
+                        id="invoiceName"
+                        type="text"
+                        required={showInvoice}
+                        value={invoice.name}
+                        onChange={(e) => updateInvoice("name", e.target.value)}
+                        className={INPUT_CLASS}
+                        placeholder="שם מלא / שם חברה"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="invoicePhone" className="block font-semibold text-primary mb-2 text-sm">
+                        טלפון <span className="text-accent">*</span>
+                      </label>
+                      <input
+                        id="invoicePhone"
+                        type="tel"
+                        required={showInvoice}
+                        value={invoice.phone}
+                        onChange={(e) => updateInvoice("phone", e.target.value)}
+                        className={INPUT_CLASS}
+                        placeholder="050-0000000"
+                        dir="ltr"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label htmlFor="invoiceAddress" className="block font-semibold text-primary mb-2 text-sm">
+                      כתובת <span className="text-accent">*</span>
+                    </label>
+                    <input
+                      id="invoiceAddress"
+                      type="text"
+                      required={showInvoice}
+                      value={invoice.address}
+                      onChange={(e) => updateInvoice("address", e.target.value)}
+                      className={INPUT_CLASS}
+                      placeholder="כתובת לחשבונית"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="invoiceBusiness" className="block font-semibold text-primary mb-2 text-sm">
+                      מספר עסק / ח.פ <span className="text-primary/30">(אופציונלי)</span>
+                    </label>
+                    <input
+                      id="invoiceBusiness"
+                      type="text"
+                      value={invoice.businessNumber}
+                      onChange={(e) => updateInvoice("businessNumber", e.target.value)}
+                      className={INPUT_CLASS}
+                      placeholder="מספר עוסק / ח.פ."
+                      dir="ltr"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Trust signals */}
             <div className="grid grid-cols-3 gap-3 py-4">
               <div className="flex flex-col items-center text-center gap-2 py-3">
-                <svg className="w-6 h-6 text-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <svg className="w-6 h-6 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                 </svg>
                 <span className="text-xs text-primary/50 font-medium">רכישה מאובטחת</span>
