@@ -93,20 +93,27 @@ function AutocompleteInput({
 }
 
 // Israeli cities from data.gov.il
+// City names in the DB have trailing spaces — we store the raw name for street filtering, display trimmed
+type CityEntry = { display: string; raw: string };
+
 function useCities() {
-  const [cities, setCities] = useState<string[]>([]);
+  const [cities, setCities] = useState<CityEntry[]>([]);
 
   useEffect(() => {
     fetch(
-      'https://data.gov.il/api/3/action/datastore_search?resource_id=5c78e9fa-c2e2-4571-b4d8-571e2f1ae6e4&limit=2000&fields=שם_ישוב'
+      'https://data.gov.il/api/3/action/datastore_search?resource_id=5c78e9fa-c2e2-4771-93ff-7f400a12f7ba&limit=2000&fields=שם_ישוב'
     )
       .then((r) => r.json())
       .then((data) => {
-        const names: string[] = data.result.records
-          .map((r: Record<string, string>) => r["שם_ישוב"]?.trim())
-          .filter(Boolean)
-          .sort((a: string, b: string) => a.localeCompare(b, "he"));
-        setCities(names);
+        const entries: CityEntry[] = data.result.records
+          .map((r: Record<string, string>) => {
+            const raw = r["שם_ישוב"] || "";
+            const display = raw.trim();
+            return display ? { display, raw } : null;
+          })
+          .filter(Boolean) as CityEntry[];
+        entries.sort((a, b) => a.display.localeCompare(b.display, "he"));
+        setCities(entries);
       })
       .catch(() => {});
   }, []);
@@ -115,17 +122,17 @@ function useCities() {
 }
 
 // Israeli streets for a given city from data.gov.il
-function useStreets(city: string) {
+function useStreets(cityRaw: string) {
   const [streets, setStreets] = useState<string[]>([]);
 
   useEffect(() => {
-    if (!city.trim()) {
+    if (!cityRaw) {
       setStreets([]);
       return;
     }
-    const encoded = encodeURIComponent(`{"שם_ישוב":"${city.trim()}"}`);
+    const encoded = encodeURIComponent(JSON.stringify({ "שם_ישוב": cityRaw }));
     fetch(
-      `https://data.gov.il/api/3/action/datastore_search?resource_id=a7296d1a-f8c9-4b70-96c2-6ebb4352f8e3&limit=1000&fields=שם_רחוב&filters=${encoded}`
+      `https://data.gov.il/api/3/action/datastore_search?resource_id=9ad3862c-8391-4b2f-84a4-2d4c68625f4b&limit=1000&fields=שם_רחוב&filters=${encoded}`
     )
       .then((r) => r.json())
       .then((data) => {
@@ -136,7 +143,7 @@ function useStreets(city: string) {
         setStreets(names);
       })
       .catch(() => setStreets([]));
-  }, [city]);
+  }, [cityRaw]);
 
   return streets;
 }
@@ -146,7 +153,9 @@ export default function CheckoutPage() {
   const { user } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const cities = useCities();
+  const cityEntries = useCities();
+  const cityNames = cityEntries.map((c) => c.display);
+  const [cityRaw, setCityRaw] = useState("");
   const [form, setForm] = useState({
     fullName: "",
     phone: "",
@@ -156,7 +165,7 @@ export default function CheckoutPage() {
     apartment: "",
     floor: "",
   });
-  const streets = useStreets(form.city);
+  const streets = useStreets(cityRaw);
   const [showInvoice, setShowInvoice] = useState(false);
   const [invoice, setInvoice] = useState({
     name: "",
@@ -292,8 +301,14 @@ export default function CheckoutPage() {
                   </label>
                   <AutocompleteInput
                     value={form.city}
-                    onChange={(v) => updateForm("city", v)}
-                    items={cities}
+                    onChange={(v) => {
+                      updateForm("city", v);
+                      const entry = cityEntries.find((c) => c.display === v);
+                      setCityRaw(entry ? entry.raw : "");
+                      // Reset street when city changes
+                      updateForm("street", "");
+                    }}
+                    items={cityNames}
                     placeholder="הקלד שם עיר..."
                     required
                   />
