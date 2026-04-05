@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { useWishlist } from "@/context/WishlistContext";
@@ -15,6 +15,8 @@ export default function Header() {
   const { user } = useAuth();
   const { wishlist } = useWishlist();
   const router = useRouter();
+  const pathname = usePathname();
+  const isHome = pathname === "/";
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -74,7 +76,7 @@ export default function Header() {
 
   return (
     <>
-      <header className={`text-white sticky top-0 z-50 transition-all duration-500 ease-in-out ${scrolled ? "bg-primary/90 backdrop-blur-md shadow-lg" : "bg-primary"}`} role="banner">
+      <header className={`text-white sticky top-0 z-50 transition-all duration-500 ease-in-out ${scrolled ? "bg-primary/90 backdrop-blur-md shadow-lg" : isHome ? "bg-transparent" : "bg-primary"}`} role="banner">
         <div className="w-full px-3 md:px-6 py-3 flex items-center justify-between">
           {/* Right side - Hamburger menu */}
           <button
