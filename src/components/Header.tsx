@@ -24,7 +24,7 @@ export default function Header() {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [scrolled, setScrolled] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [searchTransition, setSearchTransition] = useState(false);
+  const [searchBg, setSearchBg] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -51,14 +51,14 @@ export default function Header() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
-  // Focus search input when opened; disable header transition around search toggle
+  // Keep dark header background while search is open or closing
   useEffect(() => {
     if (searchOpen) {
-      setSearchTransition(true);
+      setSearchBg(true);
       searchRef.current?.focus();
     } else {
-      setSearchTransition(true);
-      const timer = setTimeout(() => setSearchTransition(false), 350);
+      // Keep dark bg until search bar finishes closing (300ms transition)
+      const timer = setTimeout(() => setSearchBg(false), 350);
       return () => clearTimeout(timer);
     }
   }, [searchOpen]);
@@ -84,7 +84,7 @@ export default function Header() {
 
   return (
     <>
-      <header className={`text-white sticky top-0 z-50 ease-in-out ${searchTransition ? "transition-none" : "transition-all duration-500"} ${scrolled || searchOpen ? "bg-primary/90 backdrop-blur-md shadow-lg" : isHome ? "bg-transparent border-b border-white/15" : "bg-primary"}`} role="banner">
+      <header className={`text-white sticky top-0 z-50 ease-in-out ${searchBg ? "transition-none" : "transition-all duration-500"} ${scrolled || searchBg ? "bg-primary/90 backdrop-blur-md shadow-lg" : isHome ? "bg-transparent border-b border-white/15" : "bg-primary"}`} role="banner">
         <div className="w-full px-3 md:px-6 py-3 flex items-center justify-between">
           {/* Right side - Hamburger menu */}
           <button
