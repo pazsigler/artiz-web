@@ -69,7 +69,7 @@ export default function HeroSlider({ slides }: Props) {
 
   return (
     <section className="relative overflow-hidden -mt-[56px] md:-mt-[62px]" aria-label="באנרים" aria-roledescription="קרוסלה">
-      <div className="relative h-[476px] md:h-[582px] pt-[56px] md:pt-[62px]">
+      <div className="relative h-[520px] md:h-[620px] pt-[100px]">
 
         {/* All slides stacked — crossfade between them */}
         {slides.map((slide, i) => {
