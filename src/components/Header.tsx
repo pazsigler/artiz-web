@@ -87,7 +87,7 @@ export default function Header() {
 
   return (
     <>
-      <header className={`text-white sticky top-0 z-50 ease-in-out ${!mounted || searchBg ? "transition-none" : "transition-all duration-500"} ${scrolled || searchBg ? "bg-primary/90 backdrop-blur-md shadow-lg" : isHome ? "bg-transparent border-b border-white/15" : "bg-primary"}`} role="banner">
+      <header className={`text-white sticky top-0 z-50 ease-in-out border-b ${!mounted || searchBg ? "transition-none" : "transition-all duration-500"} ${scrolled || searchBg ? "bg-primary/90 backdrop-blur-md shadow-lg border-transparent" : isHome ? "bg-transparent border-white/15" : "bg-primary border-transparent"}`} role="banner">
         <div className="w-full px-3 md:px-6 py-3 flex items-center justify-between">
           {/* Right side - Hamburger menu */}
           <button
