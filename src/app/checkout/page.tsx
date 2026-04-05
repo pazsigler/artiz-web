@@ -4,7 +4,8 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { createOrder } from "@/lib/supabase";
+import { createOrder, validateCoupon, calcDiscount, incrementCouponUsage } from "@/lib/supabase";
+import type { Coupon } from "@/lib/supabase";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -166,6 +167,10 @@ export default function CheckoutPage() {
     floor: "",
   });
   const streets = useStreets(cityRaw);
+  const [couponCode, setCouponCode] = useState("");
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
+  const [couponError, setCouponError] = useState("");
   const [showInvoice, setShowInvoice] = useState(false);
   const [invoice, setInvoice] = useState({
     name: "",
@@ -182,6 +187,30 @@ export default function CheckoutPage() {
 
   if (items.length === 0) return null;
 
+  const discount = appliedCoupon ? calcDiscount(appliedCoupon, totalPrice) : 0;
+  const finalPrice = totalPrice - discount;
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setCouponLoading(true);
+    setCouponError("");
+    const result = await validateCoupon(couponCode, totalPrice);
+    if (result.valid && result.coupon) {
+      setAppliedCoupon(result.coupon);
+      setCouponError("");
+    } else {
+      setAppliedCoupon(null);
+      setCouponError(result.error || "קופון לא תקין");
+    }
+    setCouponLoading(false);
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponCode("");
+    setCouponError("");
+  };
+
   const buildAddress = () => {
     let addr = `${form.street} ${form.streetNumber}, ${form.city}`;
     if (form.apartment) addr += `, דירה ${form.apartment}`;
@@ -197,7 +226,7 @@ export default function CheckoutPage() {
         fullName: form.fullName,
         phone: form.phone,
         address: buildAddress(),
-        total: totalPrice,
+        total: finalPrice,
         userId: user?.id,
         items: items.map((item) => ({
           productId: item.product.id,
@@ -207,6 +236,9 @@ export default function CheckoutPage() {
           customization: item.customization,
         })),
       });
+      if (appliedCoupon) {
+        await incrementCouponUsage(appliedCoupon.id);
+      }
       clearCart();
       router.push("/");
       alert("ההזמנה נשלחה בהצלחה!");
@@ -524,18 +556,73 @@ export default function CheckoutPage() {
               ))}
             </div>
 
+            {/* Coupon */}
+            <div className="border-t border-primary/10 pt-4 pb-2">
+              {appliedCoupon ? (
+                <div className="flex items-center justify-between bg-success/10 rounded-xl px-3 py-2.5">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="text-sm font-semibold text-primary" dir="ltr">{appliedCoupon.code}</span>
+                    <span className="text-xs text-success font-semibold">
+                      {appliedCoupon.discount_type === "percentage" ? `${appliedCoupon.discount_value}%` : `₪${appliedCoupon.discount_value}`} הנחה
+                    </span>
+                  </div>
+                  <button
+                    onClick={handleRemoveCoupon}
+                    className="text-primary/30 hover:text-accent transition-colors"
+                    aria-label="הסר קופון"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={couponCode}
+                      onChange={(e) => { setCouponCode(e.target.value.toUpperCase()); setCouponError(""); }}
+                      placeholder="קוד קופון"
+                      className="flex-1 border border-primary/15 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-accent transition-all"
+                      dir="ltr"
+                    />
+                    <button
+                      onClick={handleApplyCoupon}
+                      disabled={couponLoading || !couponCode.trim()}
+                      className="bg-primary text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-40"
+                    >
+                      {couponLoading ? "..." : "החל"}
+                    </button>
+                  </div>
+                  {couponError && (
+                    <p className="text-xs text-accent mt-1.5">{couponError}</p>
+                  )}
+                </div>
+              )}
+            </div>
+
             <div className="border-t border-primary/10 pt-4 space-y-2">
               <div className="flex justify-between text-sm text-primary/60">
                 <span>סכום ביניים</span>
                 <span>₪{totalPrice}</span>
               </div>
+              {discount > 0 && (
+                <div className="flex justify-between text-sm text-success font-semibold">
+                  <span>הנחת קופון</span>
+                  <span>-₪{discount}</span>
+                </div>
+              )}
               <div className="flex justify-between text-sm text-primary/60">
                 <span>משלוח</span>
                 <span>ייקבע בהמשך</span>
               </div>
               <div className="border-t border-primary/10 pt-3 flex justify-between text-xl font-bold text-primary">
                 <span>סה&quot;כ</span>
-                <span>₪{totalPrice}</span>
+                <span>₪{finalPrice}</span>
               </div>
             </div>
           </div>

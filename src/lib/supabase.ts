@@ -153,6 +153,68 @@ export async function createOrder(order: {
   return data;
 }
 
+// Coupons
+export interface Coupon {
+  id: string;
+  code: string;
+  discount_type: "percentage" | "fixed";
+  discount_value: number;
+  min_order: number;
+  max_discount: number | null;
+  max_uses: number | null;
+  used_count: number;
+  expires_at: string | null;
+  active: boolean;
+}
+
+export async function validateCoupon(code: string, orderTotal: number): Promise<{ valid: boolean; coupon?: Coupon; error?: string }> {
+  const { data, error } = await supabase
+    .from("coupons")
+    .select("*")
+    .eq("code", code.toUpperCase().trim())
+    .single();
+
+  if (error || !data) return { valid: false, error: "קופון לא נמצא" };
+
+  const coupon = data as Coupon;
+
+  if (!coupon.active) return { valid: false, error: "קופון לא פעיל" };
+  if (coupon.expires_at && new Date(coupon.expires_at) < new Date()) return { valid: false, error: "פג תוקף הקופון" };
+  if (coupon.max_uses && coupon.used_count >= coupon.max_uses) return { valid: false, error: "הקופון נוצל עד תום" };
+  if (orderTotal < coupon.min_order) return { valid: false, error: `סכום הזמנה מינימלי: ₪${coupon.min_order}` };
+
+  return { valid: true, coupon };
+}
+
+export function calcDiscount(coupon: Coupon, orderTotal: number): number {
+  let discount = 0;
+  if (coupon.discount_type === "percentage") {
+    discount = (orderTotal * coupon.discount_value) / 100;
+    if (coupon.max_discount && discount > coupon.max_discount) {
+      discount = coupon.max_discount;
+    }
+  } else {
+    discount = coupon.discount_value;
+  }
+  return Math.min(discount, orderTotal);
+}
+
+export async function incrementCouponUsage(couponId: string) {
+  await supabase.rpc("increment_coupon_usage", { coupon_id: couponId }).then(() => {}).catch(() => {
+    // Fallback: manual increment
+    supabase
+      .from("coupons")
+      .select("used_count")
+      .eq("id", couponId)
+      .single()
+      .then(({ data }) => {
+        if (data) {
+          supabase.from("coupons").update({ used_count: data.used_count + 1 }).eq("id", couponId);
+        }
+      });
+  });
+}
+
 // Blog
 export async function getBlogPosts(publishedOnly = true): Promise<BlogPost[]> {
   let query = supabase.from("blog_posts").select("*").order("created_at", { ascending: false });
