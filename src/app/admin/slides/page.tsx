@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import { uploadSlideImage } from "@/lib/storage";
+import MediaPicker from "@/components/admin/MediaPicker";
 
 interface SlideRow {
   id: string;
@@ -34,6 +35,7 @@ export default function AdminSlides() {
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [mediaPicker, setMediaPicker] = useState(false);
   const imageRef = useRef<HTMLInputElement>(null);
 
   const load = async () => {
@@ -185,24 +187,41 @@ export default function AdminSlides() {
                 </button>
               </div>
             ) : (
-              <button
-                onClick={() => imageRef.current?.click()}
-                disabled={uploading}
-                className="w-full max-w-md h-48 border-2 border-dashed border-primary/20 rounded-xl flex flex-col items-center justify-center gap-2 text-primary/40 hover:border-pink hover:text-pink transition-colors"
-              >
-                {uploading ? (
-                  <span className="text-sm">מעלה...</span>
-                ) : (
-                  <>
-                    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-                    </svg>
-                    <span className="text-sm font-semibold">העלה תמונת מוצר</span>
-                    <span className="text-xs">מומלץ: PNG עם רקע שקוף</span>
-                  </>
-                )}
-              </button>
+              <div className="flex gap-3 max-w-md">
+                <button
+                  onClick={() => imageRef.current?.click()}
+                  disabled={uploading}
+                  className="flex-1 h-48 border-2 border-dashed border-primary/20 rounded-xl flex flex-col items-center justify-center gap-2 text-primary/40 hover:border-pink hover:text-pink transition-colors"
+                >
+                  {uploading ? (
+                    <span className="text-sm">מעלה...</span>
+                  ) : (
+                    <>
+                      <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                      </svg>
+                      <span className="text-sm font-semibold">העלה חדש</span>
+                      <span className="text-xs">PNG עם רקע שקוף</span>
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => setMediaPicker(true)}
+                  className="flex-1 h-48 border-2 border-dashed border-primary/20 rounded-xl flex flex-col items-center justify-center gap-2 text-primary/40 hover:border-pink hover:text-pink transition-colors"
+                >
+                  <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span className="text-sm font-semibold">בחר מהספרייה</span>
+                </button>
+              </div>
             )}
+            <MediaPicker
+              open={mediaPicker}
+              onClose={() => setMediaPicker(false)}
+              onSelect={(url) => setForm((prev) => ({ ...prev, image_desktop: url }))}
+              folder="slides"
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
