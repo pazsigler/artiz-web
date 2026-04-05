@@ -284,8 +284,8 @@ export default function CheckoutPage() {
                 כתובת משלוח
               </h2>
 
-              {/* City, Street, Number - required */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Row 1: City, Street */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="city" className="block font-semibold text-primary mb-2 text-sm">
                     עיר <span className="text-accent">*</span>
@@ -310,6 +310,10 @@ export default function CheckoutPage() {
                     required
                   />
                 </div>
+              </div>
+
+              {/* Row 2: Number, Apartment, Floor */}
+              <div className="grid grid-cols-3 gap-3">
                 <div>
                   <label htmlFor="streetNumber" className="block font-semibold text-primary mb-2 text-sm">
                     מספר <span className="text-accent">*</span>
@@ -324,10 +328,6 @@ export default function CheckoutPage() {
                     placeholder="מספר"
                   />
                 </div>
-              </div>
-
-              {/* Apartment, Floor - optional */}
-              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label htmlFor="apartment" className="block font-semibold text-primary mb-2 text-sm">דירה</label>
                   <input
