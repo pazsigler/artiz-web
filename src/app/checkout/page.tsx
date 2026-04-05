@@ -16,36 +16,20 @@ const steps = [
 
 const INPUT_CLASS = "w-full border border-primary/15 rounded-xl p-3.5 focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/10 transition-all text-sm";
 
-// Israeli cities autocomplete using data.gov.il API
-function useCityAutocomplete() {
-  const [cities, setCities] = useState<string[]>([]);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    if (loaded) return;
-    fetch(
-      'https://data.gov.il/api/3/action/datastore_search?resource_id=5c78e9fa-c2e2-4571-b4d8-571e2f1ae6e4&limit=2000&fields=שם_ישוב'
-    )
-      .then((r) => r.json())
-      .then((data) => {
-        const names: string[] = data.result.records
-          .map((r: Record<string, string>) => r["שם_ישוב"]?.trim())
-          .filter(Boolean)
-          .sort((a: string, b: string) => a.localeCompare(b, "he"));
-        setCities(names);
-        setLoaded(true);
-      })
-      .catch(() => {
-        // Fallback: allow free text
-        setLoaded(true);
-      });
-  }, [loaded]);
-
-  return cities;
-}
-
-function CityInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  const cities = useCityAutocomplete();
+// Generic autocomplete input
+function AutocompleteInput({
+  value,
+  onChange,
+  items,
+  placeholder,
+  required = false,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  items: string[];
+  placeholder: string;
+  required?: boolean;
+}) {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -53,9 +37,9 @@ function CityInput({ value, onChange }: { value: string; onChange: (v: string) =
   const handleChange = useCallback(
     (v: string) => {
       onChange(v);
-      if (v.trim().length > 0 && cities.length > 0) {
+      if (v.trim().length > 0 && items.length > 0) {
         const q = v.trim();
-        const matches = cities.filter((c) => c.includes(q)).slice(0, 8);
+        const matches = items.filter((c) => c.includes(q)).slice(0, 8);
         setSuggestions(matches);
         setOpen(matches.length > 0);
       } else {
@@ -63,10 +47,9 @@ function CityInput({ value, onChange }: { value: string; onChange: (v: string) =
         setOpen(false);
       }
     },
-    [cities, onChange]
+    [items, onChange]
   );
 
-  // Close on click outside
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
@@ -79,27 +62,27 @@ function CityInput({ value, onChange }: { value: string; onChange: (v: string) =
     <div className="relative" ref={ref}>
       <input
         type="text"
-        required
+        required={required}
         value={value}
         onChange={(e) => handleChange(e.target.value)}
         onFocus={() => { if (suggestions.length > 0) setOpen(true); }}
         className={INPUT_CLASS}
-        placeholder="הקלד שם עיר..."
+        placeholder={placeholder}
         autoComplete="off"
       />
       {open && suggestions.length > 0 && (
         <ul className="absolute z-50 top-full mt-1 w-full bg-white border border-primary/10 rounded-xl shadow-lg max-h-48 overflow-y-auto">
-          {suggestions.map((city) => (
-            <li key={city}>
+          {suggestions.map((item) => (
+            <li key={item}>
               <button
                 type="button"
                 className="w-full text-right px-4 py-2.5 text-sm hover:bg-sky/10 transition-colors"
                 onClick={() => {
-                  onChange(city);
+                  onChange(item);
                   setOpen(false);
                 }}
               >
-                {city}
+                {item}
               </button>
             </li>
           ))}
@@ -109,11 +92,61 @@ function CityInput({ value, onChange }: { value: string; onChange: (v: string) =
   );
 }
 
+// Israeli cities from data.gov.il
+function useCities() {
+  const [cities, setCities] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetch(
+      'https://data.gov.il/api/3/action/datastore_search?resource_id=5c78e9fa-c2e2-4571-b4d8-571e2f1ae6e4&limit=2000&fields=שם_ישוב'
+    )
+      .then((r) => r.json())
+      .then((data) => {
+        const names: string[] = data.result.records
+          .map((r: Record<string, string>) => r["שם_ישוב"]?.trim())
+          .filter(Boolean)
+          .sort((a: string, b: string) => a.localeCompare(b, "he"));
+        setCities(names);
+      })
+      .catch(() => {});
+  }, []);
+
+  return cities;
+}
+
+// Israeli streets for a given city from data.gov.il
+function useStreets(city: string) {
+  const [streets, setStreets] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!city.trim()) {
+      setStreets([]);
+      return;
+    }
+    const encoded = encodeURIComponent(`{"שם_ישוב":"${city.trim()}"}`);
+    fetch(
+      `https://data.gov.il/api/3/action/datastore_search?resource_id=a7296d1a-f8c9-4b70-96c2-6ebb4352f8e3&limit=1000&fields=שם_רחוב&filters=${encoded}`
+    )
+      .then((r) => r.json())
+      .then((data) => {
+        const names: string[] = data.result.records
+          .map((r: Record<string, string>) => r["שם_רחוב"]?.trim())
+          .filter(Boolean)
+          .sort((a: string, b: string) => a.localeCompare(b, "he"));
+        setStreets(names);
+      })
+      .catch(() => setStreets([]));
+  }, [city]);
+
+  return streets;
+}
+
 export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
   const { user } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const cities = useCities();
   const [form, setForm] = useState({
     fullName: "",
     phone: "",
@@ -123,6 +156,7 @@ export default function CheckoutPage() {
     apartment: "",
     floor: "",
   });
+  const streets = useStreets(form.city);
   const [showInvoice, setShowInvoice] = useState(false);
   const [invoice, setInvoice] = useState({
     name: "",
@@ -256,20 +290,24 @@ export default function CheckoutPage() {
                   <label htmlFor="city" className="block font-semibold text-primary mb-2 text-sm">
                     עיר <span className="text-accent">*</span>
                   </label>
-                  <CityInput value={form.city} onChange={(v) => updateForm("city", v)} />
+                  <AutocompleteInput
+                    value={form.city}
+                    onChange={(v) => updateForm("city", v)}
+                    items={cities}
+                    placeholder="הקלד שם עיר..."
+                    required
+                  />
                 </div>
                 <div>
                   <label htmlFor="street" className="block font-semibold text-primary mb-2 text-sm">
                     רחוב <span className="text-accent">*</span>
                   </label>
-                  <input
-                    id="street"
-                    type="text"
-                    required
+                  <AutocompleteInput
                     value={form.street}
-                    onChange={(e) => updateForm("street", e.target.value)}
-                    className={INPUT_CLASS}
+                    onChange={(v) => updateForm("street", v)}
+                    items={streets}
                     placeholder="שם הרחוב"
+                    required
                   />
                 </div>
                 <div>
