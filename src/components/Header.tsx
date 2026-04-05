@@ -11,7 +11,7 @@ import { getCategories, getProducts, getProductsByIds } from "@/lib/supabase";
 import { Category, Product } from "@/lib/types";
 
 export default function Header() {
-  const { totalItems } = useCart();
+  const { items: cartItems, totalItems, totalPrice, removeItem, updateQuantity } = useCart();
   const { user } = useAuth();
   const { wishlist, toggleWishlist } = useWishlist();
   const router = useRouter();
@@ -28,6 +28,7 @@ export default function Header() {
   const [mounted, setMounted] = useState(false);
   const [wishlistOpen, setWishlistOpen] = useState(false);
   const [wishlistProducts, setWishlistProducts] = useState<Product[]>([]);
+  const [cartOpen, setCartOpen] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -49,8 +50,9 @@ export default function Header() {
       if (searchOpen) setSearchOpen(false);
       if (menuOpen) setMenuOpen(false);
       if (wishlistOpen) setWishlistOpen(false);
+      if (cartOpen) setCartOpen(false);
     }
-  }, [menuOpen, searchOpen, wishlistOpen]);
+  }, [menuOpen, searchOpen, wishlistOpen, cartOpen]);
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
@@ -156,7 +158,11 @@ export default function Header() {
             </button>
 
             {/* Cart */}
-            <Link href="/cart" className="p-1.5 md:p-2 hover:bg-white/10 rounded-lg transition-colors relative" aria-label={`סל קניות${totalItems > 0 ? `, ${totalItems} פריטים` : ""}`}>
+            <button
+              onClick={() => setCartOpen(true)}
+              className="p-1.5 md:p-2 hover:bg-white/10 rounded-lg transition-colors relative"
+              aria-label={`סל קניות${totalItems > 0 ? `, ${totalItems} פריטים` : ""}`}
+            >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-[18px] w-[18px] md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
               </svg>
@@ -165,7 +171,7 @@ export default function Header() {
                   {totalItems}
                 </span>
               )}
-            </Link>
+            </button>
           </div>
         </div>
 
@@ -404,6 +410,127 @@ export default function Header() {
               לעמוד המועדפים המלא
             </Link>
           </div>
+        </div>
+      </div>
+
+      {/* Cart off-canvas drawer */}
+      <div
+        className={`fixed inset-0 z-50 transition-opacity duration-300 ${
+          cartOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+        onClick={() => setCartOpen(false)}
+      >
+        <div className="absolute inset-0 bg-black/30" />
+        <div
+          className={`absolute top-0 left-0 h-full w-80 md:w-96 bg-white shadow-2xl transition-transform duration-300 ease-in-out flex flex-col ${
+            cartOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-5 py-4 border-b border-primary/10">
+            <h2 className="font-bold text-primary text-lg flex items-center gap-2">
+              <svg className="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+              </svg>
+              סל קניות
+              {totalItems > 0 && (
+                <span className="text-sm font-normal text-primary/40">({totalItems})</span>
+              )}
+            </h2>
+            <button
+              onClick={() => setCartOpen(false)}
+              className="p-1.5 hover:bg-primary/5 rounded-lg transition-colors"
+              aria-label="סגור"
+            >
+              <svg className="w-5 h-5 text-primary/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 overflow-y-auto">
+            {cartItems.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full text-center px-6">
+                <svg className="w-16 h-16 text-primary/10 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                </svg>
+                <p className="text-primary/40 text-sm">סל הקניות ריק</p>
+                <p className="text-primary/25 text-xs mt-1">הוסיפו מוצרים לסל כדי להתחיל</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-primary/5">
+                {cartItems.map((item, i) => (
+                  <div key={i} className="flex items-center gap-3 px-5 py-3">
+                    <Link
+                      href={`/product/${item.product.id}`}
+                      onClick={() => setCartOpen(false)}
+                      className="w-14 h-14 rounded-xl overflow-hidden bg-sky/10 flex-shrink-0 relative"
+                    >
+                      {item.product.image ? (
+                        <Image src={item.product.image} alt="" fill className="object-cover" sizes="56px" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <svg className="w-5 h-5 text-primary/15" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                      )}
+                    </Link>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-primary truncate">{item.product.name}</p>
+                      <p className="text-xs text-primary/40">₪{item.product.price}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <button
+                          onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+                          className="w-6 h-6 rounded-full bg-primary/5 flex items-center justify-center text-primary/50 hover:bg-primary/10 transition-colors text-xs"
+                        >
+                          −
+                        </button>
+                        <span className="text-xs font-semibold text-primary min-w-[16px] text-center">{item.quantity}</span>
+                        <button
+                          onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                          className="w-6 h-6 rounded-full bg-primary/5 flex items-center justify-center text-primary/50 hover:bg-primary/10 transition-colors text-xs"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                      <span className="text-sm font-bold text-primary">₪{item.product.price * item.quantity}</span>
+                      <button
+                        onClick={() => removeItem(item.product.id)}
+                        className="p-1 hover:bg-accent/10 rounded-lg transition-colors"
+                        aria-label="הסר מהסל"
+                      >
+                        <svg className="w-4 h-4 text-primary/30 hover:text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Footer */}
+          {cartItems.length > 0 && (
+            <div className="border-t border-primary/10 p-4 space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-primary/50">סה&quot;כ</span>
+                <span className="text-lg font-bold text-primary">₪{totalPrice}</span>
+              </div>
+              <Link
+                href="/cart"
+                onClick={() => setCartOpen(false)}
+                className="block w-full text-center bg-accent text-white py-3 rounded-full font-semibold hover:bg-accent/90 transition-all duration-300 hover:shadow-lg text-sm"
+              >
+                לעמוד סל הקניות
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </>
