@@ -119,6 +119,7 @@ export default function CheckoutPage() {
     phone: "",
     city: "",
     street: "",
+    streetNumber: "",
     apartment: "",
     floor: "",
   });
@@ -139,7 +140,7 @@ export default function CheckoutPage() {
   if (items.length === 0) return null;
 
   const buildAddress = () => {
-    let addr = `${form.street}, ${form.city}`;
+    let addr = `${form.street} ${form.streetNumber}, ${form.city}`;
     if (form.apartment) addr += `, דירה ${form.apartment}`;
     if (form.floor) addr += `, קומה ${form.floor}`;
     return addr;
@@ -249,8 +250,8 @@ export default function CheckoutPage() {
                 כתובת משלוח
               </h2>
 
-              {/* City & Street - required */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* City, Street, Number - required */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label htmlFor="city" className="block font-semibold text-primary mb-2 text-sm">
                     עיר <span className="text-accent">*</span>
@@ -259,7 +260,7 @@ export default function CheckoutPage() {
                 </div>
                 <div>
                   <label htmlFor="street" className="block font-semibold text-primary mb-2 text-sm">
-                    רחוב ומספר <span className="text-accent">*</span>
+                    רחוב <span className="text-accent">*</span>
                   </label>
                   <input
                     id="street"
@@ -268,7 +269,21 @@ export default function CheckoutPage() {
                     value={form.street}
                     onChange={(e) => updateForm("street", e.target.value)}
                     className={INPUT_CLASS}
-                    placeholder="לדוגמה: הרצל 10"
+                    placeholder="שם הרחוב"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="streetNumber" className="block font-semibold text-primary mb-2 text-sm">
+                    מספר <span className="text-accent">*</span>
+                  </label>
+                  <input
+                    id="streetNumber"
+                    type="text"
+                    required
+                    value={form.streetNumber}
+                    onChange={(e) => updateForm("streetNumber", e.target.value)}
+                    className={INPUT_CLASS}
+                    placeholder="מספר"
                   />
                 </div>
               </div>
