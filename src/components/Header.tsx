@@ -7,13 +7,13 @@ import { useRouter, usePathname } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { useWishlist } from "@/context/WishlistContext";
-import { getCategories, getProducts } from "@/lib/supabase";
+import { getCategories, getProducts, getProductsByIds } from "@/lib/supabase";
 import { Category, Product } from "@/lib/types";
 
 export default function Header() {
   const { totalItems } = useCart();
   const { user } = useAuth();
-  const { wishlist } = useWishlist();
+  const { wishlist, toggleWishlist } = useWishlist();
   const router = useRouter();
   const pathname = usePathname();
   const isHome = pathname === "/";
@@ -26,6 +26,8 @@ export default function Header() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [searchBg, setSearchBg] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [wishlistOpen, setWishlistOpen] = useState(false);
+  const [wishlistProducts, setWishlistProducts] = useState<Product[]>([]);
   const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -46,8 +48,9 @@ export default function Header() {
     if (e.key === "Escape") {
       if (searchOpen) setSearchOpen(false);
       if (menuOpen) setMenuOpen(false);
+      if (wishlistOpen) setWishlistOpen(false);
     }
-  }, [menuOpen, searchOpen]);
+  }, [menuOpen, searchOpen, wishlistOpen]);
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
@@ -84,6 +87,13 @@ export default function Header() {
     setSearchQuery("");
     router.push(`/product/${productId}`);
   };
+
+  // Fetch wishlist products when drawer opens
+  useEffect(() => {
+    if (wishlistOpen && wishlist.length > 0) {
+      getProductsByIds(wishlist).then(setWishlistProducts);
+    }
+  }, [wishlistOpen, wishlist]);
 
   return (
     <>
@@ -130,7 +140,11 @@ export default function Header() {
             </Link>
 
             {/* Wishlist */}
-            <Link href="/wishlist" className="p-1.5 md:p-2 hover:bg-white/10 rounded-lg transition-colors relative" aria-label={`מועדפים${wishlist.length > 0 ? `, ${wishlist.length} פריטים` : ""}`}>
+            <button
+              onClick={() => setWishlistOpen(true)}
+              className="p-1.5 md:p-2 hover:bg-white/10 rounded-lg transition-colors relative"
+              aria-label={`מועדפים${wishlist.length > 0 ? `, ${wishlist.length} פריטים` : ""}`}
+            >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-[18px] w-[18px] md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
               </svg>
@@ -139,7 +153,7 @@ export default function Header() {
                   {wishlist.length}
                 </span>
               )}
-            </Link>
+            </button>
 
             {/* Cart */}
             <Link href="/cart" className="p-1.5 md:p-2 hover:bg-white/10 rounded-lg transition-colors relative" aria-label={`סל קניות${totalItems > 0 ? `, ${totalItems} פריטים` : ""}`}>
@@ -290,6 +304,108 @@ export default function Header() {
           onClick={() => { setSearchOpen(false); setSearchQuery(""); }}
         />
       )}
+
+      {/* Wishlist off-canvas drawer */}
+      <div
+        className={`fixed inset-0 z-50 transition-opacity duration-300 ${
+          wishlistOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+        onClick={() => setWishlistOpen(false)}
+      >
+        <div className="absolute inset-0 bg-black/30" />
+        <div
+          className={`absolute top-0 left-0 h-full w-80 md:w-96 bg-white shadow-2xl transition-transform duration-300 ease-in-out flex flex-col ${
+            wishlistOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-5 py-4 border-b border-primary/10">
+            <h2 className="font-bold text-primary text-lg flex items-center gap-2">
+              <svg className="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+              </svg>
+              מועדפים
+              {wishlist.length > 0 && (
+                <span className="text-sm font-normal text-primary/40">({wishlist.length})</span>
+              )}
+            </h2>
+            <button
+              onClick={() => setWishlistOpen(false)}
+              className="p-1.5 hover:bg-primary/5 rounded-lg transition-colors"
+              aria-label="סגור"
+            >
+              <svg className="w-5 h-5 text-primary/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 overflow-y-auto">
+            {wishlist.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full text-center px-6">
+                <svg className="w-16 h-16 text-primary/10 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                </svg>
+                <p className="text-primary/40 text-sm">רשימת המועדפים ריקה</p>
+                <p className="text-primary/25 text-xs mt-1">לחצו על הלב במוצר כדי להוסיף</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-primary/5">
+                {wishlistProducts.map((product) => (
+                  <Link
+                    key={product.id}
+                    href={`/product/${product.id}`}
+                    onClick={() => setWishlistOpen(false)}
+                    className="flex items-center gap-3 px-5 py-3 hover:bg-sky/5 transition-colors"
+                  >
+                    <div className="w-14 h-14 rounded-xl overflow-hidden bg-sky/10 flex-shrink-0 relative">
+                      {product.image ? (
+                        <Image src={product.image} alt="" fill className="object-cover" sizes="56px" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <svg className="w-5 h-5 text-primary/15" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-primary truncate">{product.name}</p>
+                      <p className="text-xs text-primary/40">₪{product.price}</p>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleWishlist(product.id);
+                      }}
+                      className="p-1.5 hover:bg-accent/10 rounded-lg transition-colors flex-shrink-0"
+                      aria-label="הסר מהמועדפים"
+                    >
+                      <svg className="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                      </svg>
+                    </button>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Footer - link to full wishlist page */}
+          <div className="border-t border-primary/10 p-4">
+            <Link
+              href="/wishlist"
+              onClick={() => setWishlistOpen(false)}
+              className="block w-full text-center bg-accent text-white py-3 rounded-full font-semibold hover:bg-accent/90 transition-all duration-300 hover:shadow-lg text-sm"
+            >
+              לעמוד המועדפים המלא
+            </Link>
+          </div>
+        </div>
+      </div>
     </>
   );
 }
