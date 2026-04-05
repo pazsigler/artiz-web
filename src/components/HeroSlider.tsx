@@ -155,39 +155,40 @@ export default function HeroSlider({ slides }: Props) {
           );
         })}
 
-        {/* Bottom bar: dots + arrows */}
-        <div className="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 md:left-8 md:translate-x-0 flex items-center gap-3 z-20">
-          <div className="flex gap-2">
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrent(i)}
-                className={`rounded-full transition-all duration-500 ${
-                  i === current
-                    ? `w-8 h-3 ${activeTheme.dotActive}`
-                    : "w-3 h-3 bg-white/30 hover:bg-white/50"
-                }`}
-                aria-label={`סלייד ${i + 1}`}
-              />
-            ))}
-          </div>
+        {/* Dots - centered */}
+        <div className="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              className={`rounded-full transition-all duration-500 ${
+                i === current
+                  ? `w-6 h-2 ${activeTheme.dotActive}`
+                  : "w-2 h-2 bg-white/30 hover:bg-white/50"
+              }`}
+              aria-label={`סלייד ${i + 1}`}
+            />
+          ))}
+        </div>
 
+        {/* Arrows - left side */}
+        <div className="absolute bottom-4 md:bottom-6 left-4 md:left-8 flex items-center gap-1 z-20">
           <button
             onClick={goPrev}
-            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all backdrop-blur-sm"
+            className="w-8 h-8 rounded-full text-white/50 hover:text-white flex items-center justify-center transition-colors"
             aria-label="הקודם"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>
           <button
             onClick={goNext}
-            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all backdrop-blur-sm"
+            className="w-8 h-8 rounded-full text-white/50 hover:text-white flex items-center justify-center transition-colors"
             aria-label="הבא"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
         </div>
