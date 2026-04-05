@@ -5,15 +5,15 @@ import HeroSlider from "@/components/HeroSlider";
 import CategoryIcon from "@/components/CategoryIcon";
 import BulkOrderForm from "@/components/BulkOrderForm";
 
-const circleColors = [
-  "bg-accent/15 group-hover:bg-accent/25",
-  "bg-sky/25 group-hover:bg-sky/35",
-  "bg-lavender/15 group-hover:bg-lavender/25",
-  "bg-success/15 group-hover:bg-success/25",
-  "bg-warm/15 group-hover:bg-warm/25",
-  "bg-accent/10 group-hover:bg-accent/20",
-  "bg-sky/20 group-hover:bg-sky/30",
-  "bg-lavender/10 group-hover:bg-lavender/20",
+const categoryStyles = [
+  { bg: "bg-accent/15 group-hover:bg-accent/25", filter: "invert(52%) sepia(60%) saturate(700%) hue-rotate(307deg) brightness(90%) contrast(90%)" },
+  { bg: "bg-sky/20 group-hover:bg-sky/30", filter: "invert(72%) sepia(30%) saturate(600%) hue-rotate(165deg) brightness(95%) contrast(85%)" },
+  { bg: "bg-lavender/15 group-hover:bg-lavender/25", filter: "invert(60%) sepia(20%) saturate(800%) hue-rotate(230deg) brightness(90%) contrast(85%)" },
+  { bg: "bg-success/15 group-hover:bg-success/25", filter: "invert(60%) sepia(40%) saturate(600%) hue-rotate(95deg) brightness(90%) contrast(85%)" },
+  { bg: "bg-warm/15 group-hover:bg-warm/25", filter: "invert(70%) sepia(50%) saturate(700%) hue-rotate(10deg) brightness(95%) contrast(90%)" },
+  { bg: "bg-accent/10 group-hover:bg-accent/20", filter: "invert(52%) sepia(60%) saturate(700%) hue-rotate(307deg) brightness(90%) contrast(90%)" },
+  { bg: "bg-sky/15 group-hover:bg-sky/25", filter: "invert(72%) sepia(30%) saturate(600%) hue-rotate(165deg) brightness(95%) contrast(85%)" },
+  { bg: "bg-lavender/10 group-hover:bg-lavender/20", filter: "invert(60%) sepia(20%) saturate(800%) hue-rotate(230deg) brightness(90%) contrast(85%)" },
 ];
 
 function SectionHeading({ title, subtitle, light = false }: { title: string; subtitle?: string; light?: boolean }) {
@@ -59,22 +59,25 @@ export default async function Home() {
 
         <div className="max-w-7xl mx-auto px-4 relative">
           <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-4 md:gap-6 justify-items-center">
-            {categories.map((cat, i) => (
-              <Link
-                key={cat.id}
-                href={`/category?cat=${cat.slug}`}
-                className="flex flex-col items-center gap-3 group"
-              >
-                <div
-                  className={`${circleColors[i % circleColors.length]} w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center text-primary/70 group-hover:scale-110 group-hover:text-primary group-hover:shadow-lg transition-all duration-300`}
+            {categories.map((cat, i) => {
+              const style = categoryStyles[i % categoryStyles.length];
+              return (
+                <Link
+                  key={cat.id}
+                  href={`/category?cat=${cat.slug}`}
+                  className="flex flex-col items-center gap-3 group"
                 >
-                  <CategoryIcon slug={cat.slug} className="w-8 h-8 md:w-10 md:h-10 transition-transform duration-300 group-hover:scale-110" />
-                </div>
-                <h3 className="font-semibold text-primary text-sm group-hover:text-accent transition-colors duration-300">
-                  {cat.name}
-                </h3>
-              </Link>
-            ))}
+                  <div
+                    className={`${style.bg} w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center group-hover:scale-110 group-hover:shadow-lg transition-all duration-300`}
+                  >
+                    <CategoryIcon slug={cat.slug} className="w-8 h-8 md:w-10 md:h-10 transition-transform duration-300 group-hover:scale-110" style={{ filter: style.filter }} />
+                  </div>
+                  <h3 className="font-semibold text-primary text-sm group-hover:text-accent transition-colors duration-300">
+                    {cat.name}
+                  </h3>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>

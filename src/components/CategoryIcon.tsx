@@ -3,6 +3,7 @@ import Image from "next/image";
 interface Props {
   slug: string;
   className?: string;
+  style?: React.CSSProperties;
 }
 
 const slugMap: Record<string, string> = {
@@ -16,7 +17,7 @@ const slugMap: Record<string, string> = {
   packages: "packages",
 };
 
-export default function CategoryIcon({ slug, className = "w-8 h-8" }: Props) {
+export default function CategoryIcon({ slug, className = "w-8 h-8", style }: Props) {
   const file = slugMap[slug] || "packages";
   return (
     <Image
@@ -25,6 +26,7 @@ export default function CategoryIcon({ slug, className = "w-8 h-8" }: Props) {
       width={32}
       height={32}
       className={className}
+      style={style}
       aria-hidden="true"
     />
   );

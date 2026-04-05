@@ -22,11 +22,11 @@
 
 @theme inline {
   --color-primary: #384850;
-  --color-accent: #e8729e;
-  --color-sky: #d4eef6;
-  --color-lavender: #c9b8db;
-  --color-warm: #f5c872;
-  --color-success: #7bc47f;
+  --color-accent: #e06b94;
+  --color-sky: #8ecae6;
+  --color-lavender: #b196cc;
+  --color-warm: #f0b044;
+  --color-success: #5db86a;
   --font-sans: "Einstein", Arial, Helvetica, sans-serif;
 }
 
