@@ -7,13 +7,13 @@ import BulkOrderForm from "@/components/BulkOrderForm";
 
 const circleColors = [
   "bg-pink/15 group-hover:bg-pink/25",
-  "bg-sky/20 group-hover:bg-sky/30",
-  "bg-purple-soft/15 group-hover:bg-purple-soft/25",
-  "bg-green-soft/15 group-hover:bg-green-soft/25",
-  "bg-orange-soft/15 group-hover:bg-orange-soft/25",
+  "bg-sky/25 group-hover:bg-sky/35",
   "bg-lavender/15 group-hover:bg-lavender/25",
-  "bg-yellow-soft/15 group-hover:bg-yellow-soft/25",
-  "bg-teal/15 group-hover:bg-teal/25",
+  "bg-green/15 group-hover:bg-green/25",
+  "bg-warm/15 group-hover:bg-warm/25",
+  "bg-pink/10 group-hover:bg-pink/20",
+  "bg-sky/20 group-hover:bg-sky/30",
+  "bg-lavender/10 group-hover:bg-lavender/20",
 ];
 
 function SectionHeading({ title, subtitle, light = false }: { title: string; subtitle?: string; light?: boolean }) {

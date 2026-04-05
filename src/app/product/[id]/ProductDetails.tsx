@@ -386,7 +386,7 @@ export default function ProductDetails({ product }: { product: Product }) {
               onClick={handleAdd}
               className={`flex-1 py-3 rounded-full font-semibold transition-colors ${
                 added
-                  ? "bg-green-soft text-white"
+                  ? "bg-green text-white"
                   : "bg-primary text-white hover:bg-primary/90"
               }`}
             >

@@ -279,7 +279,7 @@ export default function AdminSlides() {
               <div className="font-bold text-primary truncate">{s.title}</div>
               <div className="text-sm text-primary/50">{s.subtitle}</div>
             </div>
-            <span className={`text-xs px-3 py-1 rounded-full font-semibold ${s.active ? "bg-green-soft/30 text-green-700" : "bg-gray-100 text-gray-400"}`}>
+            <span className={`text-xs px-3 py-1 rounded-full font-semibold ${s.active ? "bg-green/30 text-green-700" : "bg-gray-100 text-gray-400"}`}>
               {s.active ? "פעיל" : "לא פעיל"}
             </span>
             <div className="flex gap-2">

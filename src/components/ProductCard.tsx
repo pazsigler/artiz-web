@@ -60,7 +60,7 @@ export default function ProductCard({ product }: { product: Product }) {
             onClick={handleAddToCart}
             className={`absolute bottom-3 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 shadow-lg ${
               added
-                ? "bg-green-soft text-primary translate-y-0 opacity-100"
+                ? "bg-green text-primary translate-y-0 opacity-100"
                 : "bg-white text-primary translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 hover:bg-pink hover:text-white"
             }`}
             aria-label={`הוסף ${product.name} לסל`}

@@ -258,7 +258,7 @@ export default function AdminBlog() {
             <button
               onClick={() => handleTogglePublish(p)}
               className={`text-xs px-3 py-1 rounded-full font-semibold cursor-pointer transition-colors ${
-                p.published ? "bg-green-soft/30 text-green-700 hover:bg-green-soft/50" : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+                p.published ? "bg-green/30 text-green-700 hover:bg-green/50" : "bg-gray-100 text-gray-400 hover:bg-gray-200"
               }`}
             >
               {p.published ? "פורסם" : "טיוטה"}

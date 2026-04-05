@@ -276,7 +276,7 @@ export default function AdminCoupons() {
               onClick={() => handleToggleActive(c)}
               className={`text-xs px-3 py-1 rounded-full font-semibold cursor-pointer transition-colors ${
                 c.active && !isExpired(c) && !isUsedUp(c)
-                  ? "bg-green-soft/30 text-green-700 hover:bg-green-soft/50"
+                  ? "bg-green/30 text-green-700 hover:bg-green/50"
                   : "bg-gray-100 text-gray-400 hover:bg-gray-200"
               }`}
             >

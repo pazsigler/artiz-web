@@ -107,7 +107,7 @@ export default function WishlistPage() {
                   }}
                   className={`w-full py-2.5 rounded-full font-semibold transition-colors text-sm ${
                     addedId === product.id
-                      ? "bg-green-soft text-white"
+                      ? "bg-green text-white"
                       : "bg-primary text-white hover:bg-primary/90"
                   }`}
                 >

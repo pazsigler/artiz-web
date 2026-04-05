@@ -22,14 +22,11 @@
 
 @theme inline {
   --color-primary: #384850;
-  --color-pink: #f38eb3;
-  --color-sky: #c7e9f2;
-  --color-purple-soft: #cc90b7;
-  --color-green-soft: #b1d9a3;
-  --color-orange-soft: #fed194;
-  --color-yellow-soft: #fee580;
-  --color-lavender: #d1c4e0;
-  --color-teal: #83adb5;
+  --color-pink: #e8729e;
+  --color-sky: #d4eef6;
+  --color-lavender: #c9b8db;
+  --color-warm: #f5c872;
+  --color-green: #7bc47f;
   --font-sans: "Einstein", Arial, Helvetica, sans-serif;
 }
 
@@ -41,7 +38,7 @@ body {
 
 /* Global focus styles for keyboard navigation */
 *:focus-visible {
-  outline: 2px solid #f38eb3;
+  outline: 2px solid #e8729e;
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -77,7 +74,7 @@ body {
 
 /* Accessibility: highlight links */
 .a11y-highlight-links a {
-  outline: 2px solid #f38eb3 !important;
+  outline: 2px solid #e8729e !important;
   outline-offset: 2px !important;
   text-decoration: underline !important;
 }

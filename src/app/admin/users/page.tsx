@@ -21,7 +21,7 @@ const roleLabels: Record<UserRole, string> = {
 
 const roleColors: Record<UserRole, string> = {
   admin: "bg-pink/20 text-pink",
-  editor: "bg-purple-soft/20 text-purple-700",
+  editor: "bg-lavender/20 text-purple-700",
   customer: "bg-sky/20 text-primary",
 };
 

@@ -24,10 +24,10 @@ const statusLabels: Record<string, string> = {
 };
 
 const statusColors: Record<string, string> = {
-  pending: "bg-yellow-soft/40 text-yellow-700",
+  pending: "bg-warm/40 text-yellow-700",
   confirmed: "bg-sky/30 text-blue-700",
-  shipped: "bg-purple-soft/30 text-purple-700",
-  delivered: "bg-green-soft/30 text-green-700",
+  shipped: "bg-lavender/30 text-purple-700",
+  delivered: "bg-green/30 text-green-700",
   cancelled: "bg-red-100 text-red-600",
 };
 

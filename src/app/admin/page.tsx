@@ -26,8 +26,8 @@ export default function AdminDashboard() {
 
   const cards = [
     { label: "מוצרים", value: stats.products, color: "bg-sky/20 text-primary" },
-    { label: "קטגוריות", value: stats.categories, color: "bg-green-soft/20 text-primary" },
-    { label: "הזמנות", value: stats.orders, color: "bg-purple-soft/20 text-primary" },
+    { label: "קטגוריות", value: stats.categories, color: "bg-green/20 text-primary" },
+    { label: "הזמנות", value: stats.orders, color: "bg-lavender/20 text-primary" },
     { label: "ממתינות לטיפול", value: stats.pendingOrders, color: "bg-pink/20 text-pink" },
   ];
 

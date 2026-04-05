@@ -39,7 +39,7 @@ export default function SignupPage() {
   if (success) {
     return (
       <div className="max-w-md mx-auto px-4 py-16 text-center">
-        <div className="bg-green-soft/20 rounded-2xl p-8">
+        <div className="bg-green/20 rounded-2xl p-8">
           <h1 className="text-2xl font-bold text-primary mb-4">נרשמת בהצלחה!</h1>
           <p className="text-primary/70 mb-6">
             שלחנו לך מייל אימות. לחץ על הלינק במייל כדי להפעיל את החשבון.
